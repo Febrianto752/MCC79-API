@@ -14,5 +14,8 @@ namespace API.Models
 
         [Column("name", TypeName = "nvarchar(50)")]
         public string Name { get; set; }
+
+        // cardinality
+        public ICollection<Education> Educations { get; set; }
     }
 }

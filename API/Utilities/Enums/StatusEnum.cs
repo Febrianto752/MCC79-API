@@ -6,6 +6,6 @@ public enum StatusLevel
     Reject,
     UpComing,
     OnGoing,
-    Done
+    Ended
 }
 

@@ -23,9 +23,14 @@ namespace API.Models
         public StatusLevel Status { get; set; }
 
         [Column("room_guid")]
-        public Guid RoomGuid { get; set; }
+        public Guid RoomGUID { get; set; }
 
         [Column("employee_id")]
-        public Guid EmployeeId { get; set; }
+        public Guid EmployeeGUID { get; set; }
+
+        // Cardinality
+        public Employee Employee { get; set; }
+
+        public Room Room { get; set; }
     }
 }

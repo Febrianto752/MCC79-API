@@ -20,5 +20,9 @@ namespace API.Models
 
         [Column("university_GUID")]
         public Guid UniversityGUID { get; set; }
+
+        public University University { get; set; }
+
+        public Employee Employee { get; set; }
     }
 }
