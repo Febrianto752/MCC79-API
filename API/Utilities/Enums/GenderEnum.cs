@@ -1,6 +1,6 @@
 ﻿namespace API.Utilities.Enums;
 
-public enum Gender
+public enum GenderEnum
 {
     Female,
     Male

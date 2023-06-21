@@ -5,12 +5,10 @@ namespace API.Models
 {
     // ini anotasi '[]'
     [Table("tb_m_employees")]
-    public class Employee
+    public class Employee : BaseEntity
     {
 
         [Key]
-        [Column("guid")]
-        public Guid GUID { get; set; }
 
         [Column("nik", TypeName = "nvarchar(6)")]
         public string NIK { get; set; }
@@ -35,10 +33,5 @@ namespace API.Models
         [Column("phone_number", TypeName = "nvarchar(20)")]
         public string PhoneNumber { get; set; }
 
-        [Column("created_date")]
-        public DateTime CreatedDate { get; set; }
-
-        [Column("modified_date")]
-        public DateTime ModifiedDate { get; set; }
     }
 }
