@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Models
 {
@@ -7,7 +6,7 @@ namespace API.Models
     public class Education : BaseEntity
     {
 
-        [Key]
+
 
         [Column("major", TypeName = "nvarchar(100)")]
         public string Major { get; set; }
@@ -21,8 +20,10 @@ namespace API.Models
         [Column("university_GUID")]
         public Guid UniversityGUID { get; set; }
 
-        public University University { get; set; }
 
-        public Employee Employee { get; set; }
+        // Cardinality
+        public University? University { get; set; }
+
+        public Employee? Employee { get; set; }
     }
 }

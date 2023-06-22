@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Models
 {
@@ -7,7 +6,7 @@ namespace API.Models
     [Table("tb_m_universities")]
     public class University : BaseEntity
     {
-        [Key]
+
 
         [Column("code", TypeName = "nvarchar(50)")]
         public string Code { get; set; }
@@ -16,6 +15,6 @@ namespace API.Models
         public string Name { get; set; }
 
         // cardinality
-        public ICollection<Education> Educations { get; set; }
+        public ICollection<Education>? Educations { get; set; }
     }
 }

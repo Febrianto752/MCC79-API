@@ -1,5 +1,4 @@
 ﻿using API.Utilities.Enums;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Models
@@ -7,7 +6,7 @@ namespace API.Models
     [Table("tb_tr_bookings")]
     public class Booking : BaseEntity
     {
-        [Key]
+
 
         [Column("start_date")]
         public DateTime StartDate { get; set; }
@@ -29,8 +28,8 @@ namespace API.Models
         public Guid EmployeeGUID { get; set; }
 
         // Cardinality
-        public Employee Employee { get; set; }
+        public Employee? Employee { get; set; }
 
-        public Room Room { get; set; }
+        public Room? Room { get; set; }
     }
 }

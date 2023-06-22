@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Models
 {
@@ -7,7 +6,7 @@ namespace API.Models
     [Table("tb_m_accounts")]
     public class Account : BaseEntity
     {
-        [Key]
+        //[Key]
 
         [Column("password", TypeName = "nvarchar(255)")]
         public string Password { get; set; }
@@ -25,8 +24,8 @@ namespace API.Models
         public DateTime ExpiredTime { get; set; }
 
         // Cardinality
-        public Employee Employee { get; set; }
-        public ICollection<AccountRole> AccountRoles { get; set; }
+        public Employee? Employee { get; set; }
+        public ICollection<AccountRole>? AccountRoles { get; set; }
 
     }
 }
