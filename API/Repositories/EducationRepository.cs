@@ -4,44 +4,44 @@ using API.Models;
 
 namespace API.Repositories;
 
-public class EmployeeRepository : IEmployeeRepository
+public class EducationRepository : IEducationRepository
 {
     private readonly BookingDBContext _context;
 
-    public EmployeeRepository(BookingDBContext context)
+    public EducationRepository(BookingDBContext context)
     {
         _context = context;
     }
 
-    public ICollection<Employee> GetAll()
+    public ICollection<Education> GetAll()
     {
-        return _context.Set<Employee>().ToList();
+        return _context.Set<Education>().ToList();
     }
 
-    public Employee? GetByGuid(Guid guid)
+    public Education? GetByGuid(Guid guid)
     {
-        return _context.Set<Employee>().Find(guid);
+        return _context.Set<Education>().Find(guid);
     }
 
-    public Employee Create(Employee employee)
+    public Education Create(Education education)
     {
         try
         {
-            _context.Set<Employee>().Add(employee);
+            _context.Set<Education>().Add(education);
             _context.SaveChanges();
-            return employee;
+            return education;
         }
         catch
         {
-            return new Employee();
+            return new Education();
         }
     }
 
-    public bool Update(Employee employee)
+    public bool Update(Education education)
     {
         try
         {
-            _context.Set<Employee>().Update(employee);
+            _context.Set<Education>().Update(education);
             _context.SaveChanges();
             return true;
         }
@@ -55,13 +55,13 @@ public class EmployeeRepository : IEmployeeRepository
     {
         try
         {
-            var employee = GetByGuid(guid);
-            if (employee is null)
+            var education = GetByGuid(guid);
+            if (education is null)
             {
                 return false;
             }
 
-            _context.Set<Employee>().Remove(employee);
+            _context.Set<Education>().Remove(education);
             _context.SaveChanges();
             return true;
         }

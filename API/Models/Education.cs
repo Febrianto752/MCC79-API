@@ -6,15 +6,13 @@ namespace API.Models
     public class Education : BaseEntity
     {
 
-
-
         [Column("major", TypeName = "nvarchar(100)")]
         public string Major { get; set; }
 
         [Column("degree", TypeName = "nvarchar(10)")]
         public string Degree { get; set; }
 
-        [Column("gpa", TypeName = "nvarchar(10)")]
+        [Column("gpa")]
         public float GPA { get; set; }
 
         [Column("university_GUID")]
