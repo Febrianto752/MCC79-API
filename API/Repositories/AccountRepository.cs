@@ -4,44 +4,44 @@ using API.Models;
 
 namespace API.Repositories;
 
-public class BookingRepository : IBookingRepository
+public class AccountRepository : IAccountRepository
 {
     private readonly BookingDBContext _context;
 
-    public BookingRepository(BookingDBContext context)
+    public AccountRepository(BookingDBContext context)
     {
         _context = context;
     }
 
-    public ICollection<Booking> GetAll()
+    public ICollection<Account> GetAll()
     {
-        return _context.Set<Booking>().ToList();
+        return _context.Set<Account>().ToList();
     }
 
-    public Booking? GetByGuid(Guid guid)
+    public Account? GetByGuid(Guid guid)
     {
-        return _context.Set<Booking>().Find(guid);
+        return _context.Set<Account>().Find(guid);
     }
 
-    public Booking Create(Booking booking)
+    public Account Create(Account account)
     {
         try
         {
-            _context.Set<Booking>().Add(booking);
+            _context.Set<Account>().Add(account);
             _context.SaveChanges();
-            return booking;
+            return account;
         }
         catch
         {
-            return new Booking();
+            return new Account();
         }
     }
 
-    public bool Update(Booking booking)
+    public bool Update(Account account)
     {
         try
         {
-            _context.Set<Booking>().Update(booking);
+            _context.Set<Account>().Update(account);
             _context.SaveChanges();
             return true;
         }
@@ -55,13 +55,13 @@ public class BookingRepository : IBookingRepository
     {
         try
         {
-            var booking = GetByGuid(guid);
-            if (booking is null)
+            var account = GetByGuid(guid);
+            if (account is null)
             {
                 return false;
             }
 
-            _context.Set<Booking>().Remove(booking);
+            _context.Set<Account>().Remove(account);
             _context.SaveChanges();
             return true;
         }
