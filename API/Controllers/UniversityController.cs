@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/universities")]
+[Route("api/v1/universities")]
 public class UniversityController : ControllerBase
 {
     private readonly IUniversityRepository _repository;
