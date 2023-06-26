@@ -1,73 +1,174 @@
-﻿using API.Contracts;
-using API.Models;
+﻿using API.DTOs.Universities;
+using API.Services;
+using API.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/v1/universities")]
+[Route("api/universities")]
 public class UniversityController : ControllerBase
 {
-    private readonly IUniversityRepository _repository;
+    private readonly UniversityService _service;
 
-    public UniversityController(IUniversityRepository repository)
+    public UniversityController(UniversityService service)
     {
-        _repository = repository;
+        _service = service;
     }
 
     [HttpGet]
     public IActionResult GetAll()
     {
-        var univerities = _repository.GetAll();
+        var entities = _service.GetUniversity();
 
-        if (!univerities.Any())
+        if (!entities.Any())
         {
-            return NotFound();
+            return NotFound(new ResponseHandler<UniversityDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data not found"
+            });
         }
 
-        return Ok(univerities);
+        return Ok(new ResponseHandler<IEnumerable<UniversityDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data found",
+            Data = entities
+        });
     }
 
     [HttpGet("{guid}")]
     public IActionResult GetByGuid(Guid guid)
     {
-        var university = _repository.GetByGuid(guid);
+        var university = _service.GetUniversity(guid);
         if (university is null)
         {
-            return NotFound();
+            return NotFound(new ResponseHandler<UniversityDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data not found"
+            });
         }
 
-        return Ok(university);
+        return Ok(new ResponseHandler<UniversityDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data found",
+            Data = university
+        });
     }
 
     [HttpPost]
-    public IActionResult Create(University university)
+    public IActionResult Create(NewUniversityDto newUniversityDto)
     {
-        var createdUniversity = _repository.Create(university);
-        return Ok(createdUniversity);
+        var createdUniversity = _service.CreateUniversity(newUniversityDto);
+        if (createdUniversity is null)
+        {
+            return BadRequest(new ResponseHandler<UniversityDto>
+            {
+                Code = StatusCodes.Status400BadRequest,
+                Status = HttpStatusCode.BadRequest.ToString(),
+                Message = "Data not created"
+            });
+        }
+
+        return Ok(new ResponseHandler<UniversityDto>
+        {
+            Code = StatusCodes.Status201Created,
+            Status = HttpStatusCode.Created.ToString(),
+            Message = "Successfully created",
+            Data = createdUniversity
+        });
     }
 
     [HttpPut]
-    public IActionResult Update(University university)
+    public IActionResult Update(UniversityDto updateUniversityDto)
     {
-        var isUpdated = _repository.Update(university);
-        if (!isUpdated)
+        var update = _service.UpdateUniversity(updateUniversityDto);
+        if (update is -1)
         {
-            return NotFound();
+            return NotFound(new ResponseHandler<UniversityDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Id not found"
+            });
         }
-
-        return Ok(new { message = "Success updated university" });
+        if (update is 0)
+        {
+            return BadRequest(new ResponseHandler<UniversityDto>
+            {
+                Code = StatusCodes.Status500InternalServerError,
+                Status = HttpStatusCode.InternalServerError.ToString(),
+                Message = "Check your data"
+            });
+        }
+        return Ok(new ResponseHandler<UniversityDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Successfully updated"
+        });
     }
 
     [HttpDelete]
     public IActionResult Delete(Guid guid)
     {
-        var isDeleted = _repository.Delete(guid);
-        if (!isDeleted)
+        var delete = _service.DeleteUniversity(guid);
+
+        if (delete is -1)
         {
-            return NotFound();
+            return NotFound(new ResponseHandler<UniversityDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Id not found"
+            });
+        }
+        if (delete is 0)
+        {
+            return BadRequest(new ResponseHandler<UniversityDto>
+            {
+                Code = StatusCodes.Status500InternalServerError,
+                Status = HttpStatusCode.InternalServerError.ToString(),
+                Message = "Check connection to database"
+            });
         }
 
-        return Ok(new { message = "Success deleted university" });
+        return Ok(new ResponseHandler<UniversityDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Successfully deleted"
+        });
+    }
+
+    [HttpGet("by-name/{name}")]
+    public IActionResult GetByName(string name)
+    {
+        var universities = _service.GetUniversity(name);
+        if (!universities.Any())
+        {
+            return NotFound(new ResponseHandler<UniversityDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "No universities found with the given name"
+            });
+        }
+
+        return Ok(new ResponseHandler<IEnumerable<UniversityDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Universities found",
+            Data = universities
+        });
     }
 }
