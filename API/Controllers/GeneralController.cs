@@ -1,5 +1,7 @@
 ﻿using API.Contracts;
+using API.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace API.Controllers
 {
@@ -21,10 +23,21 @@ namespace API.Controllers
 
             if (!entities.Any())
             {
-                return NotFound();
+                return NotFound(new ResponseHandler<TEntity>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Data is not found"
+                });
             }
 
-            return Ok(entities);
+            return Ok(new ResponseHandler<IEnumerable<TEntity>>()
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "data found",
+                Data = entities
+            });
         }
 
         [HttpGet("{guid}")]
@@ -34,17 +47,45 @@ namespace API.Controllers
             var entity = _repository.GetByGuid(guid);
             if (entity is null)
             {
-                return NotFound();
+                return NotFound(new ResponseHandler<TEntity>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Data is not found"
+                });
             }
 
-            return Ok(entity);
+            return Ok(new ResponseHandler<TEntity>()
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "data found",
+                Data = entity
+            });
         }
 
         [HttpPost]
         public IActionResult Create(TEntity entity)
         {
             var createdEntity = _repository.Create(entity);
-            return Ok(createdEntity);
+
+            if (createdEntity is null)
+            {
+                return BadRequest(new ResponseHandler<TEntity>()
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Check your data",
+                });
+            }
+
+            return Ok(new ResponseHandler<TEntity>()
+            {
+                Code = StatusCodes.Status201Created,
+                Status = HttpStatusCode.Created.ToString(),
+                Message = "Successfully created data",
+                Data = createdEntity
+            });
         }
 
         [HttpPut]
@@ -53,10 +94,20 @@ namespace API.Controllers
             var isUpdated = _repository.Update(entity);
             if (!isUpdated)
             {
-                return NotFound();
+                return NotFound(new ResponseHandler<TEntity>()
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Check your data",
+                });
             }
 
-            return Ok(new { message = "Success updated data" });
+            return Ok(new ResponseHandler<TEntity>()
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Successfully updated data",
+            });
         }
 
         [HttpDelete]
@@ -65,10 +116,20 @@ namespace API.Controllers
             var isDeleted = _repository.Delete(guid);
             if (!isDeleted)
             {
-                return NotFound();
+                return NotFound(new ResponseHandler<TEntity>()
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "data not found",
+                });
             }
 
-            return Ok(new { message = "Success deleted data" });
+            return Ok(new ResponseHandler<TEntity>()
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Successfully deleted data",
+            });
         }
     }
 }

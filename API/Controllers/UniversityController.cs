@@ -1,6 +1,8 @@
 ﻿using API.Contracts;
 using API.Models;
+using API.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace API.Controllers;
 
@@ -17,13 +19,24 @@ public class UniversityController : GeneralController<IUniversityRepository, Uni
     public IActionResult GetByName(string name)
     {
         Console.WriteLine(name);
-        var entities = _repository.GetByName(name);
+        var universities = _repository.GetByName(name);
 
-        if (!entities.Any())
+        if (!universities.Any())
         {
-            return NotFound();
+            return NotFound(new ResponseHandler<University>()
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "University not found by given name",
+            });
         }
 
-        return Ok(entities);
+        return Ok(new ResponseHandler<IEnumerable<University>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "university data found by given name",
+            Data = universities
+        });
     }
 }
