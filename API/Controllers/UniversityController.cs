@@ -13,11 +13,11 @@ public class UniversityController : GeneralController<IUniversityRepository, Uni
     {
     }
 
-    [HttpGet("name/{name}")]
+    [HttpGet("by-name/{name}")]
     public IActionResult GetByName(string name)
     {
         Console.WriteLine(name);
-        var entities = _repository.GetName(name);
+        var entities = _repository.GetByName(name);
 
         if (!entities.Any())
         {
@@ -26,6 +26,4 @@ public class UniversityController : GeneralController<IUniversityRepository, Uni
 
         return Ok(entities);
     }
-
-
 }

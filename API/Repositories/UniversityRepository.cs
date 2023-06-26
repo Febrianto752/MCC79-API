@@ -16,7 +16,7 @@ public class UniversityRepository : GeneralRepository<University>, IUniversityRe
     //    //return new List<University>() { new University() { Name = "test" } };
     //}
 
-    public IEnumerable<University> GetName(string name)
+    public IEnumerable<University> GetByName(string name)
     {
         return _context.Set<University>().Where(u => u.Name.Contains(name));
     }
