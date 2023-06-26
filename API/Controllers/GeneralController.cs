@@ -91,44 +91,69 @@ namespace API.Controllers
         [HttpPut]
         public IActionResult Update(TEntity entity)
         {
-            var isUpdated = _repository.Update(entity);
-            if (!isUpdated)
+            var getGuid = (Guid)typeof(TEntity).GetProperty("GUID")!.GetValue(entity)!;
+            var isFound = _repository.IsExist(getGuid);
+
+            if (isFound is false)
             {
-                return NotFound(new ResponseHandler<TEntity>()
+                return NotFound(new ResponseHandler<TEntity>
                 {
-                    Code = StatusCodes.Status400BadRequest,
-                    Status = HttpStatusCode.BadRequest.ToString(),
-                    Message = "Check your data",
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Id not found"
                 });
             }
 
-            return Ok(new ResponseHandler<TEntity>()
+            var isUpdated = _repository.Update(entity);
+            if (!isUpdated)
+            {
+                return BadRequest(new ResponseHandler<TEntity>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Check your data"
+                });
+            }
+
+            return Ok(new ResponseHandler<TEntity>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
-                Message = "Successfully updated data",
+                Message = "Successfully updated"
             });
         }
 
         [HttpDelete]
         public IActionResult Delete(Guid guid)
         {
-            var isDeleted = _repository.Delete(guid);
-            if (!isDeleted)
+            var isFound = _repository.IsExist(guid);
+
+            if (isFound is false)
             {
-                return NotFound(new ResponseHandler<TEntity>()
+                return NotFound(new ResponseHandler<TEntity>
                 {
-                    Code = StatusCodes.Status400BadRequest,
-                    Status = HttpStatusCode.BadRequest.ToString(),
-                    Message = "data not found",
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Id not found"
                 });
             }
 
-            return Ok(new ResponseHandler<TEntity>()
+            var isDeleted = _repository.Delete(guid);
+            if (!isDeleted)
+            {
+                return BadRequest(new ResponseHandler<TEntity>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Check connection to database"
+                });
+            }
+
+            return Ok(new ResponseHandler<TEntity>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
-                Message = "Successfully deleted data",
+                Message = "Successfully deleted"
             });
         }
     }
