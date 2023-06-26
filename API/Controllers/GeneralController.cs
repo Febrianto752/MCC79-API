@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class GeneralController<TContractRepository, TEntity> : ControllerBase
-        where TContractRepository : IGeneralRepository<TEntity>
+    public class GeneralController<TRepository, TEntity> : ControllerBase
+        where TRepository : IGeneralRepository<TEntity>
         where TEntity : class
     {
-        protected readonly TContractRepository _repository;
+        protected readonly TRepository _repository;
 
-        public GeneralController(TContractRepository repository)
+        public GeneralController(TRepository repository)
         {
             _repository = repository;
         }

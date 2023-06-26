@@ -6,69 +6,10 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/v1/rooms")]
-public class RoomController : ControllerBase
+public class RoomController : GeneralController<IRoomRepository, Room>
 {
-    private readonly IRoomRepository _repository;
-
-    public RoomController(IRoomRepository repository)
+    public RoomController(IRoomRepository repository) : base(repository)
     {
-        _repository = repository;
-    }
-
-    [HttpGet]
-    public IActionResult GetAll()
-    {
-        var rooms = _repository.GetAll();
-
-        if (!rooms.Any())
-        {
-            return NotFound();
-        }
-
-        return Ok(rooms);
-    }
-
-    [HttpGet("{guid}")]
-    public IActionResult GetByGuid(Guid guid)
-    {
-        var room = _repository.GetByGuid(guid);
-        if (room is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(room);
-    }
-
-    [HttpPost]
-    public IActionResult Create(Room room)
-    {
-        var createdRoom = _repository.Create(room);
-        return Ok(createdRoom);
-    }
-
-    [HttpPut]
-    public IActionResult Update(Room room)
-    {
-        var isUpdated = _repository.Update(room);
-        if (!isUpdated)
-        {
-            return NotFound();
-        }
-
-        return Ok(new { message = "Success updated room" });
-    }
-
-    [HttpDelete]
-    public IActionResult Delete(Guid guid)
-    {
-        var isDeleted = _repository.Delete(guid);
-        if (!isDeleted)
-        {
-            return NotFound();
-        }
-
-        return Ok(new { message = "Success deleted room" });
     }
 }
 

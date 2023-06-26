@@ -6,69 +6,10 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/v1/account-roles")]
-public class AccountRoleController : ControllerBase
+public class AccountRoleController : GeneralController<IAccountRoleRepository, AccountRole>
 {
-    private readonly IAccountRoleRepository _repository;
-
-    public AccountRoleController(IAccountRoleRepository repository)
+    public AccountRoleController(IAccountRoleRepository repository) : base(repository)
     {
-        _repository = repository;
-    }
-
-    [HttpGet]
-    public IActionResult GetAll()
-    {
-        var accountRoles = _repository.GetAll();
-
-        if (!accountRoles.Any())
-        {
-            return NotFound();
-        }
-
-        return Ok(accountRoles);
-    }
-
-    [HttpGet("{guid}")]
-    public IActionResult GetByGuid(Guid guid)
-    {
-        var accountRole = _repository.GetByGuid(guid);
-        if (accountRole is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(accountRole);
-    }
-
-    [HttpPost]
-    public IActionResult Create(AccountRole accountRole)
-    {
-        var createdAccountRole = _repository.Create(accountRole);
-        return Ok(createdAccountRole);
-    }
-
-    [HttpPut]
-    public IActionResult Update(AccountRole accountRole)
-    {
-        var isUpdated = _repository.Update(accountRole);
-        if (!isUpdated)
-        {
-            return NotFound();
-        }
-
-        return Ok(new { message = "Success updated account role" });
-    }
-
-    [HttpDelete]
-    public IActionResult Delete(Guid guid)
-    {
-        var isDeleted = _repository.Delete(guid);
-        if (!isDeleted)
-        {
-            return NotFound();
-        }
-
-        return Ok(new { message = "Success deleted account role" });
     }
 }
 
