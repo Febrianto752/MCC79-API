@@ -31,6 +31,7 @@ builder.Services.AddScoped<RoomService>();
 builder.Services.AddScoped<BookingService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<AccountRoleService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
