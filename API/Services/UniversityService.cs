@@ -115,22 +115,14 @@ public class UniversityService
             CreatedDate = getUniversity!.CreatedDate
         };
 
-        try
-        {
-            var isUpdate = _universityRepository.Update(university);
-            if (!isUpdate)
-            {
-                return 0; // University not updated
-            }
 
-            return 1;
-        }
-        catch (Exception ex)
+        var isUpdate = _universityRepository.Update(university);
+        if (!isUpdate)
         {
-            Console.WriteLine(ex.Message);
-            return 0;
+            return 0; // University not updated
         }
 
+        return 1;
 
     }
 
