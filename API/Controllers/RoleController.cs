@@ -1,6 +1,8 @@
-﻿using API.Contracts;
-using API.Models;
+﻿using API.DTOs.Roles;
+using API.Services;
+using API.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace API.Controllers;
 
@@ -9,67 +11,143 @@ namespace API.Controllers;
 [Route("api/v1/roles")]
 public class RoleController : ControllerBase
 {
-    private readonly IRoleRepository _repository;
+    private readonly RoleService _service;
 
-    public RoleController(IRoleRepository repository)
+    public RoleController(RoleService service)
     {
-        _repository = repository;
+        _service = service;
     }
 
     [HttpGet]
     public IActionResult GetAll()
     {
-        var roles = _repository.GetAll();
+        var roles = _service.GetRole();
 
         if (!roles.Any())
         {
-            return NotFound();
+            return NotFound(new ResponseHandler<RoleDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data not found"
+            });
         }
 
-        return Ok(roles);
+        return Ok(new ResponseHandler<IEnumerable<RoleDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data found",
+            Data = roles
+        });
     }
 
     [HttpGet("{guid}")]
     public IActionResult GetByGuid(Guid guid)
     {
-        var role = _repository.GetByGuid(guid);
-        if (role is null)
+        var roles = _service.GetRole(guid);
+        if (roles is null)
         {
-            return NotFound();
+            return NotFound(new ResponseHandler<RoleDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data not found"
+            });
         }
 
-        return Ok(role);
+        return Ok(new ResponseHandler<RoleDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data found",
+            Data = roles
+        });
     }
 
     [HttpPost]
-    public IActionResult Create(Role role)
+    public IActionResult Create(NewRoleDto newRoleDto)
     {
-        var createdRole = _repository.Create(role);
-        return Ok(createdRole);
+        var createdRole = _service.CreateRole(newRoleDto);
+        if (createdRole is null)
+        {
+            return BadRequest(new ResponseHandler<RoleDto>
+            {
+                Code = StatusCodes.Status400BadRequest,
+                Status = HttpStatusCode.BadRequest.ToString(),
+                Message = "Data not created"
+            });
+        }
+
+        return Ok(new ResponseHandler<RoleDto>
+        {
+            Code = StatusCodes.Status201Created,
+            Status = HttpStatusCode.Created.ToString(),
+            Message = "Successfully created",
+            Data = createdRole
+        });
     }
 
     [HttpPut]
-    public IActionResult Update(Role role)
+    public IActionResult Update(RoleDto updateRoleDto)
     {
-        var isUpdated = _repository.Update(role);
-        if (!isUpdated)
+        var update = _service.UpdateRole(updateRoleDto);
+        if (update is -1)
         {
-            return NotFound();
+            return NotFound(new ResponseHandler<RoleDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Id not found"
+            });
         }
-
-        return Ok(new { message = "Success updated role" });
+        if (update is 0)
+        {
+            return BadRequest(new ResponseHandler<RoleDto>
+            {
+                Code = StatusCodes.Status500InternalServerError,
+                Status = HttpStatusCode.InternalServerError.ToString(),
+                Message = "Check your data"
+            });
+        }
+        return Ok(new ResponseHandler<RoleDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Successfully updated"
+        });
     }
 
     [HttpDelete]
     public IActionResult Delete(Guid guid)
     {
-        var isDeleted = _repository.Delete(guid);
-        if (!isDeleted)
+        var delete = _service.DeleteRole(guid);
+
+        if (delete is -1)
         {
-            return NotFound();
+            return NotFound(new ResponseHandler<RoleDto>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Id not found"
+            });
+        }
+        if (delete is 0)
+        {
+            return BadRequest(new ResponseHandler<RoleDto>
+            {
+                Code = StatusCodes.Status500InternalServerError,
+                Status = HttpStatusCode.InternalServerError.ToString(),
+                Message = "Check connection to database"
+            });
         }
 
-        return Ok(new { message = "Success deleted role" });
+        return Ok(new ResponseHandler<RoleDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Successfully deleted"
+        });
     }
 }
 
