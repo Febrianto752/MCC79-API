@@ -2,131 +2,131 @@
 using API.DTOs.Rooms;
 using API.Models;
 
-namespace API.Services
+namespace API.Services;
+
+public class RoomService
 {
-    public class RoomService
+    private readonly IRoomRepository _roomRepository;
+
+    public RoomService(IRoomRepository roomRepository)
     {
-        private readonly IRoomRepository _roomRepository;
+        _roomRepository = roomRepository;
+    }
 
-        public RoomService(IRoomRepository roomRepository)
+    public IEnumerable<RoomDto>? GetRoom()
+    {
+        var rooms = _roomRepository.GetAll();
+        if (!rooms.Any())
         {
-            _roomRepository = roomRepository;
+            return null; // No rooms found
         }
 
-        public IEnumerable<RoomDto>? GetRoom()
+        var toDto = rooms.Select(room =>
+                                            new RoomDto
+                                            {
+                                                GUID = room.GUID,
+                                                Name = room.Name,
+                                                Floor = room.Floor,
+                                                Capacity = room.Capacity,
+                                            }).ToList();
+
+        return toDto; // Universities found
+    }
+
+    public RoomDto? GetRoom(Guid guid)
+    {
+        var room = _roomRepository.GetByGuid(guid);
+        if (room is null)
         {
-            var rooms = _roomRepository.GetAll();
-            if (!rooms.Any())
-            {
-                return null; // No rooms found
-            }
-
-            var toDto = rooms.Select(room =>
-                                                new RoomDto
-                                                {
-                                                    GUID = room.GUID,
-                                                    Name = room.Name,
-                                                    Floor = room.Floor,
-                                                    Capacity = room.Capacity,
-                                                }).ToList();
-
-            return toDto; // Universities found
+            return null; // Room not found
         }
 
-        public RoomDto? GetRoom(Guid guid)
+        var toDto = new RoomDto
         {
-            var room = _roomRepository.GetByGuid(guid);
-            if (room is null)
-            {
-                return null; // Room not found
-            }
+            GUID = room.GUID,
+            Name = room.Name,
+            Floor = room.Floor,
+            Capacity = room.Capacity,
+        };
 
-            var toDto = new RoomDto
-            {
-                GUID = room.GUID,
-                Name = room.Name,
-                Floor = room.Floor,
-                Capacity = room.Capacity,
-            };
+        return toDto; // Universities found
+    }
 
-            return toDto; // Universities found
+    public RoomDto? CreateRoom(NewRoomDto newRoomDto)
+    {
+        var room = new Room
+        {
+            GUID = new Guid(),
+            Name = newRoomDto.Name,
+            Floor = newRoomDto.Floor,
+            Capacity = newRoomDto.Capacity,
+            CreatedDate = DateTime.Now,
+            ModifiedDate = DateTime.Now
+        };
+
+        var createdRoom = _roomRepository.Create(room);
+        if (createdRoom is null)
+        {
+            return null; // Room not created
         }
 
-        public RoomDto? CreateRoom(NewRoomDto newRoomDto)
+        var toDto = new RoomDto
         {
-            var room = new Room
-            {
-                GUID = new Guid(),
-                Name = newRoomDto.Name,
-                Floor = newRoomDto.Floor,
-                Capacity = newRoomDto.Capacity,
-                CreatedDate = DateTime.Now,
-                ModifiedDate = DateTime.Now
-            };
+            GUID = room.GUID,
+            Name = room.Name,
+            Floor = room.Floor,
+            Capacity = room.Capacity,
+        };
 
-            var createdRoom = _roomRepository.Create(room);
-            if (createdRoom is null)
-            {
-                return null; // Room not created
-            }
+        return toDto; // Room created
+    }
 
-            var toDto = new RoomDto
-            {
-                GUID = room.GUID,
-                Name = room.Name,
-                Floor = room.Floor,
-                Capacity = room.Capacity,
-            };
-
-            return toDto; // Room created
+    public int UpdateRoom(RoomDto updateRoomDto)
+    {
+        var isExist = _roomRepository.IsExist(updateRoomDto.GUID);
+        if (!isExist)
+        {
+            return -1; // Room not found
         }
 
-        public int UpdateRoom(RoomDto updateRoomDto)
+        var getRoom = _roomRepository.GetByGuid(updateRoomDto.GUID);
+
+        var room = new Room
         {
-            var isExist = _roomRepository.IsExist(updateRoomDto.GUID);
-            if (!isExist)
-            {
-                return -1; // Room not found
-            }
+            GUID = updateRoomDto.GUID,
+            Name = updateRoomDto.Name,
+            Floor = updateRoomDto.Floor,
+            Capacity = updateRoomDto.Capacity,
+            ModifiedDate = DateTime.Now,
+            CreatedDate = getRoom!.CreatedDate
+        };
 
-            var getRoom = _roomRepository.GetByGuid(updateRoomDto.GUID);
-
-            var room = new Room
-            {
-                GUID = updateRoomDto.GUID,
-                Name = updateRoomDto.Name,
-                Floor = updateRoomDto.Floor,
-                Capacity = updateRoomDto.Capacity,
-                ModifiedDate = DateTime.Now,
-                CreatedDate = getRoom!.CreatedDate
-            };
-
-            var isUpdate = _roomRepository.Update(room);
-            if (!isUpdate)
-            {
-                return 0; // Room not updated
-            }
-
-            return 1;
-
+        var isUpdate = _roomRepository.Update(room);
+        if (!isUpdate)
+        {
+            return 0; // Room not updated
         }
 
-        public int DeleteRoom(Guid guid)
+        return 1;
+
+    }
+
+    public int DeleteRoom(Guid guid)
+    {
+        var isExist = _roomRepository.IsExist(guid);
+        if (!isExist)
         {
-            var isExist = _roomRepository.IsExist(guid);
-            if (!isExist)
-            {
-                return -1; // Room not found
-            }
-
-            var room = _roomRepository.GetByGuid(guid);
-            var isDelete = _roomRepository.Delete(room!.GUID);
-            if (!isDelete)
-            {
-                return 0; // Room not deleted
-            }
-
-            return 1;
+            return -1; // Room not found
         }
+
+        var room = _roomRepository.GetByGuid(guid);
+        var isDelete = _roomRepository.Delete(room!.GUID);
+        if (!isDelete)
+        {
+            return 0; // Room not deleted
+        }
+
+        return 1;
     }
 }
+
