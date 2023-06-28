@@ -39,13 +39,13 @@ public class AccountService
             Email = registerDto.Email,
             PhoneNumber = registerDto.PhoneNumber
         };
-        Console.WriteLine("1");
+        Console.WriteLine("1  ========");
         var createdEmployee = _employeeService.CreateEmployee(employee);
         if (createdEmployee is null)
         {
             return null;
         }
-        Console.WriteLine("2");
+        Console.WriteLine("2  ========");
 
         var university = new NewUniversityDto
         {
@@ -60,7 +60,7 @@ public class AccountService
             return null;
         }
 
-        Console.WriteLine("3");
+        Console.WriteLine("3  ========");
 
         var education = new EducationDto
         {
@@ -76,25 +76,20 @@ public class AccountService
         {
             return null;
         }
-        Console.WriteLine("4");
+        Console.WriteLine("4  ========");
         var account = new AccountDto
         {
             GUID = createdEmployee.GUID,
             Password = Hashing.HashPassword(registerDto.Password),
         };
 
-        if (registerDto.Password != registerDto.ConfirmPassword)
-        {
-            return null;
-        }
-        Console.WriteLine("5");
         var createdAccount = CreateAccount(account);
         if (createdAccount is null)
         {
             return null;
         }
 
-        Console.WriteLine("6");
+        Console.WriteLine("5 ========");
         var toDto = new RegisterDto
         {
             FirstName = createdEmployee.FirstName,

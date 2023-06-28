@@ -37,6 +37,7 @@ public class RegisterDto
     [PasswordPolicy]
     public string Password { get; set; }
     [Required]
+    [ConfirmPassword("Password", ErrorMessage = "Password and confirmation password do not match.")]
     public string ConfirmPassword { get; set; }
 
 }
