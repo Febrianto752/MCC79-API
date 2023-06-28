@@ -8,7 +8,10 @@ public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeReposito
 {
     public EmployeeRepository(BookingDBContext context) : base(context)
     {
+
     }
+
+
 
 }
 

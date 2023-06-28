@@ -1,6 +1,7 @@
 ﻿using API.Contracts;
 using API.DTOs.Accounts;
 using API.Models;
+using API.Utilities;
 
 namespace API.Services
 {
@@ -61,7 +62,7 @@ namespace API.Services
             var account = new Account
             {
                 GUID = newAccountDto.GUID,
-                Password = newAccountDto.Password,
+                Password = Hashing.HashPassword(newAccountDto.Password),
                 IsDeleted = newAccountDto.IsDeleted,
                 OTP = newAccountDto.OTP,
                 IsUsed = newAccountDto.IsUsed,
@@ -102,7 +103,7 @@ namespace API.Services
             var account = new Account
             {
                 GUID = updateAccountDto.GUID,
-                Password = updateAccountDto.Password,
+                Password = Hashing.HashPassword(updateAccountDto.Password),
                 IsDeleted = updateAccountDto.IsDeleted,
                 OTP = updateAccountDto.OTP,
                 IsUsed = updateAccountDto.IsUsed,
