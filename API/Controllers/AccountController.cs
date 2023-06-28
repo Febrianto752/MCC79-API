@@ -18,6 +18,30 @@ public class AccountController : ControllerBase
         _service = service;
     }
 
+    [Route("register")]
+    [HttpPost]
+    public IActionResult Register(RegisterDto register)
+    {
+        var createdRegister = _service.Register(register);
+        if (createdRegister == null)
+        {
+            return BadRequest(new ResponseHandler<RegisterDto>
+            {
+                Code = StatusCodes.Status400BadRequest,
+                Status = HttpStatusCode.BadRequest.ToString(),
+                Message = "Register failed"
+            });
+        }
+
+        return Ok(new ResponseHandler<RegisterDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Successfully register",
+            Data = createdRegister
+        });
+    }
+
     [HttpGet]
     public IActionResult GetAll()
     {
