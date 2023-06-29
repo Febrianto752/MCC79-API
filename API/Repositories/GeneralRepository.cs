@@ -23,7 +23,6 @@ public class GeneralRepository<TEntity> : IGeneralRepository<TEntity>
         var entity = _context.Set<TEntity>().Find(guid);
         _context.ChangeTracker.Clear();
         return entity;
-
     }
 
     public TEntity? Create(TEntity entity)

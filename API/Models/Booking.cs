@@ -6,8 +6,6 @@ namespace API.Models
     [Table("tb_tr_bookings")]
     public class Booking : BaseEntity
     {
-
-
         [Column("start_date")]
         public DateTime StartDate { get; set; }
 

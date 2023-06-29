@@ -7,9 +7,6 @@ namespace API.Models
     [Table("tb_m_employees")]
     public class Employee : BaseEntity
     {
-
-
-
         [Column("nik", TypeName = "nvarchar(6)")]
         public string NIK { get; set; }
 
