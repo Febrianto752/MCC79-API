@@ -2,10 +2,10 @@
 
 namespace API.DTOs.Roles
 {
-    public class RoleDto
+    public class UpdateRoleDto
     {
         [Required]
-        public Guid GUID { get; set; }
+        public Guid Guid { get; set; }
         [Required]
         public string Name { get; set; }
     }

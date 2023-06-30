@@ -1,8 +1,8 @@
-﻿namespace API.Utilities.Enums;
-
-public enum GenderEnum
+﻿namespace API.Utilities.Enums
 {
-    Female,
-    Male
+    public enum GenderEnum
+    {
+        Female,
+        Male
+    }
 }
-

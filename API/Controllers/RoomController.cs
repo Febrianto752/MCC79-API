@@ -20,11 +20,11 @@ public class RoomController : ControllerBase
     [HttpGet]
     public IActionResult GetAll()
     {
-        var rooms = _service.GetRoom();
+        var entities = _service.GetRoom();
 
-        if (!rooms.Any())
+        if (entities == null)
         {
-            return NotFound(new ResponseHandler<RoomDto>
+            return NotFound(new ResponseHandlers<GetRoomDto>
             {
                 Code = StatusCodes.Status404NotFound,
                 Status = HttpStatusCode.NotFound.ToString(),
@@ -32,12 +32,12 @@ public class RoomController : ControllerBase
             });
         }
 
-        return Ok(new ResponseHandler<IEnumerable<RoomDto>>
+        return Ok(new ResponseHandlers<IEnumerable<GetRoomDto>>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
             Message = "Data found",
-            Data = rooms
+            Data = entities
         });
     }
 
@@ -47,7 +47,7 @@ public class RoomController : ControllerBase
         var room = _service.GetRoom(guid);
         if (room is null)
         {
-            return NotFound(new ResponseHandler<RoomDto>
+            return NotFound(new ResponseHandlers<GetRoomDto>
             {
                 Code = StatusCodes.Status404NotFound,
                 Status = HttpStatusCode.NotFound.ToString(),
@@ -55,7 +55,7 @@ public class RoomController : ControllerBase
             });
         }
 
-        return Ok(new ResponseHandler<RoomDto>
+        return Ok(new ResponseHandlers<GetRoomDto>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
@@ -67,10 +67,10 @@ public class RoomController : ControllerBase
     [HttpPost]
     public IActionResult Create(NewRoomDto newRoomDto)
     {
-        var createdRoom = _service.CreateRoom(newRoomDto);
-        if (createdRoom is null)
+        var createRoom = _service.CreateRoom(newRoomDto);
+        if (createRoom is null)
         {
-            return BadRequest(new ResponseHandler<RoomDto>
+            return BadRequest(new ResponseHandlers<GetRoomDto>
             {
                 Code = StatusCodes.Status400BadRequest,
                 Status = HttpStatusCode.BadRequest.ToString(),
@@ -78,22 +78,22 @@ public class RoomController : ControllerBase
             });
         }
 
-        return Ok(new ResponseHandler<RoomDto>
+        return Ok(new ResponseHandlers<GetRoomDto>
         {
             Code = StatusCodes.Status201Created,
             Status = HttpStatusCode.Created.ToString(),
             Message = "Successfully created",
-            Data = createdRoom
+            Data = createRoom
         });
     }
 
     [HttpPut]
-    public IActionResult Update(RoomDto updateRoomDto)
+    public IActionResult Update(UpdateRoomDto updateRoomDto)
     {
         var update = _service.UpdateRoom(updateRoomDto);
         if (update is -1)
         {
-            return NotFound(new ResponseHandler<RoomDto>
+            return NotFound(new ResponseHandlers<UpdateRoomDto>
             {
                 Code = StatusCodes.Status404NotFound,
                 Status = HttpStatusCode.NotFound.ToString(),
@@ -102,14 +102,14 @@ public class RoomController : ControllerBase
         }
         if (update is 0)
         {
-            return BadRequest(new ResponseHandler<RoomDto>
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandlers<UpdateRoomDto>
             {
                 Code = StatusCodes.Status500InternalServerError,
                 Status = HttpStatusCode.InternalServerError.ToString(),
                 Message = "Check your data"
             });
         }
-        return Ok(new ResponseHandler<RoomDto>
+        return Ok(new ResponseHandlers<UpdateRoomDto>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
@@ -124,7 +124,7 @@ public class RoomController : ControllerBase
 
         if (delete is -1)
         {
-            return NotFound(new ResponseHandler<RoomDto>
+            return NotFound(new ResponseHandlers<GetRoomDto>
             {
                 Code = StatusCodes.Status404NotFound,
                 Status = HttpStatusCode.NotFound.ToString(),
@@ -133,7 +133,7 @@ public class RoomController : ControllerBase
         }
         if (delete is 0)
         {
-            return BadRequest(new ResponseHandler<RoomDto>
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandlers<GetRoomDto>
             {
                 Code = StatusCodes.Status500InternalServerError,
                 Status = HttpStatusCode.InternalServerError.ToString(),
@@ -141,7 +141,7 @@ public class RoomController : ControllerBase
             });
         }
 
-        return Ok(new ResponseHandler<RoomDto>
+        return Ok(new ResponseHandlers<GetRoomDto>
         {
             Code = StatusCodes.Status200OK,
             Status = HttpStatusCode.OK.ToString(),
@@ -149,6 +149,29 @@ public class RoomController : ControllerBase
         });
     }
 
+    [HttpGet("unused")]
+    public IActionResult GetUnusedRoom()
+    {
+        var unusedRooms = _service.GetUnusedRoom();
 
+        if (unusedRooms.Count() == 0)
+        {
+            return Ok(new ResponseHandlers<IEnumerable<UnusedRoomDto>>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Semua room sedang dipakai",
+                Data = unusedRooms
+            });
+        }
+
+        return Ok(new ResponseHandlers<IEnumerable<UnusedRoomDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data found",
+            Data = unusedRooms
+        });
+    }
 }
 

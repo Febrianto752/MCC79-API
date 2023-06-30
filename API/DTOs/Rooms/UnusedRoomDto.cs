@@ -2,12 +2,12 @@
 
 namespace API.DTOs.Rooms
 {
-    public class RoomDto
+    public class UnusedRoomDto
     {
         [Required]
-        public Guid GUID { get; set; }
+        public Guid RoomGuid { get; set; }
         [Required]
-        public string Name { get; set; }
+        public string RoomName { get; set; }
         [Required]
         public int Floor { get; set; }
         [Required]

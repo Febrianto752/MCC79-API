@@ -1,29 +1,29 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace API.Utilities;
-
-public class ConfirmPassword : ValidationAttribute
+namespace API.Utilities
 {
-    private readonly string _password;
-    public ConfirmPassword(string password)
+    public class ConfirmPasswordAttribute : ValidationAttribute
     {
-        _password = password;
-    }
-    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
-    {
-        var passwordProperty = validationContext.ObjectType.GetProperty(_password);
-
-        if (passwordProperty != null)
+        private readonly string _password;
+        public ConfirmPasswordAttribute(string password)
         {
-            var passwordValue = passwordProperty.GetValue(validationContext.ObjectInstance, null);
-
-            if (value != null && passwordValue != null && !value.Equals(passwordValue))
-            {
-                return new ValidationResult(ErrorMessage);
-            }
+            _password = password;
         }
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        {
+            var passwordProperty = validationContext.ObjectType.GetProperty(_password);
 
-        return ValidationResult.Success;
+            if (passwordProperty != null)
+            {
+                var passwordValue = passwordProperty.GetValue(validationContext.ObjectInstance, null);
+
+                if (value != null && passwordValue != null && !value.Equals(passwordValue))
+                {
+                    return new ValidationResult(ErrorMessage);
+                }
+            }
+
+            return ValidationResult.Success;
+        }
     }
 }
-

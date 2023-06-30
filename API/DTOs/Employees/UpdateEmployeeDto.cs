@@ -3,21 +3,18 @@ using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs.Employees
 {
-    public class EmployeeDto
+    public class UpdateEmployeeDto
     {
         [Required]
-        public Guid GUID { get; set; }
+        public Guid Guid { get; set; }
         [Required]
-        public string NIK { get; set; }
+        public string Nik { get; set; }
         [Required]
-        [MinLength(3)]
         public string FirstName { get; set; }
+        public string? LastName { get; set; }
         [Required]
-        public string LastName { get; set; }
+        public DateTime BirthDate { get; set; }
         [Required]
-        public DateTime Birthdate { get; set; }
-        [Required]
-        [Range(0, 1, ErrorMessage = "Must be Female or Male")]
         public GenderEnum Gender { get; set; }
         [Required]
         public DateTime HiringDate { get; set; }
@@ -25,7 +22,6 @@ namespace API.DTOs.Employees
         [EmailAddress]
         public string Email { get; set; }
         [Required]
-        [Phone]
         public string PhoneNumber { get; set; }
     }
 }

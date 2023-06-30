@@ -16,15 +16,15 @@ namespace API.Migrations
                 columns: table => new
                 {
                     guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    nik = table.Column<string>(type: "nvarchar(6)", nullable: false),
+                    nik = table.Column<string>(type: "nchar(6)", nullable: false),
                     first_name = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    last_name = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    birthdate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    last_name = table.Column<string>(type: "nvarchar(100)", nullable: true),
+                    birth_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     gender = table.Column<int>(type: "int", nullable: false),
                     hiring_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    email = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    email = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     phone_number = table.Column<string>(type: "nvarchar(20)", nullable: false),
-                    created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     modified_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -37,8 +37,8 @@ namespace API.Migrations
                 columns: table => new
                 {
                     guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     modified_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -51,10 +51,10 @@ namespace API.Migrations
                 columns: table => new
                 {
                     guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     floor = table.Column<int>(type: "int", nullable: false),
                     capacity = table.Column<int>(type: "int", nullable: false),
-                    created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     modified_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -68,8 +68,8 @@ namespace API.Migrations
                 {
                     guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     code = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     modified_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -84,10 +84,10 @@ namespace API.Migrations
                     guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     password = table.Column<string>(type: "nvarchar(255)", nullable: false),
                     is_deleted = table.Column<bool>(type: "bit", nullable: false),
-                    otp = table.Column<string>(type: "nvarchar(6)", nullable: false),
+                    otp = table.Column<int>(type: "int", nullable: false),
                     is_used = table.Column<bool>(type: "bit", nullable: false),
                     expired_time = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     modified_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -102,30 +102,30 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tb_tr_bookings",
+                name: "tb_tr_accounts",
                 columns: table => new
                 {
                     guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     start_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     end_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    remarks = table.Column<string>(type: "nvarchar(255)", nullable: false),
                     status = table.Column<int>(type: "int", nullable: false),
+                    remarks = table.Column<string>(type: "nvarchar(255)", nullable: false),
                     room_guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    employee_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    employee_guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     modified_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tb_tr_bookings", x => x.guid);
+                    table.PrimaryKey("PK_tb_tr_accounts", x => x.guid);
                     table.ForeignKey(
-                        name: "FK_tb_tr_bookings_tb_m_employees_employee_id",
-                        column: x => x.employee_id,
+                        name: "FK_tb_tr_accounts_tb_m_employees_employee_guid",
+                        column: x => x.employee_guid,
                         principalTable: "tb_m_employees",
                         principalColumn: "guid",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tb_tr_bookings_tb_m_rooms_room_guid",
+                        name: "FK_tb_tr_accounts_tb_m_rooms_room_guid",
                         column: x => x.room_guid,
                         principalTable: "tb_m_rooms",
                         principalColumn: "guid",
@@ -138,10 +138,10 @@ namespace API.Migrations
                 {
                     guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     major = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    degree = table.Column<string>(type: "nvarchar(10)", nullable: false),
-                    gpa = table.Column<string>(type: "nvarchar(10)", nullable: false),
-                    university_GUID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    degree = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    gpa = table.Column<float>(type: "real", nullable: false),
+                    university_guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     modified_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -154,8 +154,8 @@ namespace API.Migrations
                         principalColumn: "guid",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tb_m_educations_tb_m_universities_university_GUID",
-                        column: x => x.university_GUID,
+                        name: "FK_tb_m_educations_tb_m_universities_university_guid",
+                        column: x => x.university_guid,
                         principalTable: "tb_m_universities",
                         principalColumn: "guid",
                         onDelete: ReferentialAction.Cascade);
@@ -168,7 +168,7 @@ namespace API.Migrations
                     guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     account_guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     role_guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    created_at = table.Column<DateTime>(type: "datetime2", nullable: false),
                     modified_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -189,9 +189,9 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_m_educations_university_GUID",
+                name: "IX_tb_m_educations_university_guid",
                 table: "tb_m_educations",
-                column: "university_GUID");
+                column: "university_guid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tb_m_employees_nik_email_phone_number",
@@ -210,13 +210,13 @@ namespace API.Migrations
                 column: "role_guid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_tr_bookings_employee_id",
-                table: "tb_tr_bookings",
-                column: "employee_id");
+                name: "IX_tb_tr_accounts_employee_guid",
+                table: "tb_tr_accounts",
+                column: "employee_guid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tb_tr_bookings_room_guid",
-                table: "tb_tr_bookings",
+                name: "IX_tb_tr_accounts_room_guid",
+                table: "tb_tr_accounts",
                 column: "room_guid");
         }
 
@@ -230,7 +230,7 @@ namespace API.Migrations
                 name: "tb_tr_account_roles");
 
             migrationBuilder.DropTable(
-                name: "tb_tr_bookings");
+                name: "tb_tr_accounts");
 
             migrationBuilder.DropTable(
                 name: "tb_m_universities");

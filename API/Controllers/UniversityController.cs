@@ -4,171 +4,172 @@ using API.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace API.Controllers;
-
-[ApiController]
-[Route("api/universities")]
-public class UniversityController : ControllerBase
+namespace API.Controllers
 {
-    private readonly UniversityService _service;
-
-    public UniversityController(UniversityService service)
+    [ApiController]
+    [Route("api/v1/universities")]
+    public class UniversityController : ControllerBase
     {
-        _service = service;
-    }
+        private readonly UniversityService _service;
 
-    [HttpGet]
-    public IActionResult GetAll()
-    {
-        var entities = _service.GetUniversity();
-
-        if (!entities.Any())
+        public UniversityController(UniversityService service)
         {
-            return NotFound(new ResponseHandler<UniversityDto>
+            _service = service;
+        }
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var entities = _service.GetUniversity();
+
+            if (entities == null)
             {
-                Code = StatusCodes.Status404NotFound,
-                Status = HttpStatusCode.NotFound.ToString(),
-                Message = "Data not found"
+                return NotFound(new ResponseHandlers<GetUniversityDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Data not found"
+                });
+            }
+
+            return Ok(new ResponseHandlers<IEnumerable<GetUniversityDto>>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Data found",
+                Data = entities
             });
         }
 
-        return Ok(new ResponseHandler<IEnumerable<UniversityDto>>
+        [HttpGet("{guid}")]
+        public IActionResult GetByGuid(Guid guid)
         {
-            Code = StatusCodes.Status200OK,
-            Status = HttpStatusCode.OK.ToString(),
-            Message = "Data found",
-            Data = entities
-        });
-    }
-
-    [HttpGet("{guid}")]
-    public IActionResult GetByGuid(Guid guid)
-    {
-        var university = _service.GetUniversity(guid);
-        if (university is null)
-        {
-            return NotFound(new ResponseHandler<UniversityDto>
+            var university = _service.GetUniversity(guid);
+            if (university is null)
             {
-                Code = StatusCodes.Status404NotFound,
-                Status = HttpStatusCode.NotFound.ToString(),
-                Message = "Data not found"
+                return NotFound(new ResponseHandlers<GetUniversityDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Data not found"
+                });
+            }
+
+            return Ok(new ResponseHandlers<GetUniversityDto>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Data found",
+                Data = university
             });
         }
 
-        return Ok(new ResponseHandler<UniversityDto>
+        [HttpPost]
+        public IActionResult Create(NewUniversityDto newUniversityDto)
         {
-            Code = StatusCodes.Status200OK,
-            Status = HttpStatusCode.OK.ToString(),
-            Message = "Data found",
-            Data = university
-        });
-    }
-
-    [HttpPost]
-    public IActionResult Create(NewUniversityDto newUniversityDto)
-    {
-        var createdUniversity = _service.CreateUniversity(newUniversityDto);
-        if (createdUniversity is null)
-        {
-            return BadRequest(new ResponseHandler<UniversityDto>
+            var createdUniversity = _service.CreateUniversity(newUniversityDto);
+            if (createdUniversity is null)
             {
-                Code = StatusCodes.Status400BadRequest,
-                Status = HttpStatusCode.BadRequest.ToString(),
-                Message = "Data not created"
+                return BadRequest(new ResponseHandlers<GetUniversityDto>
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Data not created"
+                });
+            }
+
+            return Ok(new ResponseHandlers<GetUniversityDto>
+            {
+                Code = StatusCodes.Status201Created,
+                Status = HttpStatusCode.Created.ToString(),
+                Message = "Successfully created",
+                Data = createdUniversity
             });
         }
 
-        return Ok(new ResponseHandler<UniversityDto>
+        [HttpPut]
+        public IActionResult Update(UpdateUniversityDto updateUniversityDto)
         {
-            Code = StatusCodes.Status201Created,
-            Status = HttpStatusCode.Created.ToString(),
-            Message = "Successfully created",
-            Data = createdUniversity
-        });
-    }
-
-    [HttpPut]
-    public IActionResult Update(UniversityDto updateUniversityDto)
-    {
-        var update = _service.UpdateUniversity(updateUniversityDto);
-        if (update is -1)
-        {
-            return NotFound(new ResponseHandler<UniversityDto>
+            var update = _service.UpdateUniversity(updateUniversityDto);
+            if (update is -1)
             {
-                Code = StatusCodes.Status404NotFound,
-                Status = HttpStatusCode.NotFound.ToString(),
-                Message = "Id not found"
-            });
-        }
-        if (update is 0)
-        {
-            return BadRequest(new ResponseHandler<UniversityDto>
+                return NotFound(new ResponseHandlers<UpdateUniversityDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Id not found"
+                });
+            }
+            if (update is 0)
             {
-                Code = StatusCodes.Status500InternalServerError,
-                Status = HttpStatusCode.InternalServerError.ToString(),
-                Message = "Check your data"
-            });
-        }
-        return Ok(new ResponseHandler<UniversityDto>
-        {
-            Code = StatusCodes.Status200OK,
-            Status = HttpStatusCode.OK.ToString(),
-            Message = "Successfully updated"
-        });
-    }
-
-    [HttpDelete]
-    public IActionResult Delete(Guid guid)
-    {
-        var delete = _service.DeleteUniversity(guid);
-
-        if (delete is -1)
-        {
-            return NotFound(new ResponseHandler<UniversityDto>
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandlers<UpdateUniversityDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Check your data"
+                });
+            }
+            return Ok(new ResponseHandlers<UpdateUniversityDto>
             {
-                Code = StatusCodes.Status404NotFound,
-                Status = HttpStatusCode.NotFound.ToString(),
-                Message = "Id not found"
-            });
-        }
-        if (delete is 0)
-        {
-            return BadRequest(new ResponseHandler<UniversityDto>
-            {
-                Code = StatusCodes.Status500InternalServerError,
-                Status = HttpStatusCode.InternalServerError.ToString(),
-                Message = "Check connection to database"
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Successfully updated"
             });
         }
 
-        return Ok(new ResponseHandler<UniversityDto>
+        [HttpDelete]
+        public IActionResult Delete(Guid guid)
         {
-            Code = StatusCodes.Status200OK,
-            Status = HttpStatusCode.OK.ToString(),
-            Message = "Successfully deleted"
-        });
-    }
+            var delete = _service.DeleteUniversity(guid);
 
-    [HttpGet("by-name/{name}")]
-    public IActionResult GetByName(string name)
-    {
-        var universities = _service.GetUniversity(name);
-        if (!universities.Any())
-        {
-            return NotFound(new ResponseHandler<UniversityDto>
+            if (delete is -1)
             {
-                Code = StatusCodes.Status404NotFound,
-                Status = HttpStatusCode.NotFound.ToString(),
-                Message = "No universities found with the given name"
+                return NotFound(new ResponseHandlers<GetUniversityDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Id not found"
+                });
+            }
+            if (delete is 0)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandlers<GetUniversityDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Check connection to database"
+                });
+            }
+
+            return Ok(new ResponseHandlers<GetUniversityDto>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Successfully deleted"
             });
         }
 
-        return Ok(new ResponseHandler<IEnumerable<UniversityDto>>
+        [HttpGet("by-name/{name}")]
+        public IActionResult GetByName(string name)
         {
-            Code = StatusCodes.Status200OK,
-            Status = HttpStatusCode.OK.ToString(),
-            Message = "Universities found",
-            Data = universities
-        });
+            var universities = _service.GetUniversity(name);
+            if (!universities.Any())
+            {
+                return NotFound(new ResponseHandlers<GetUniversityDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "No universities found with the given name"
+                });
+            }
+
+            return Ok(new ResponseHandlers<IEnumerable<GetUniversityDto>>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Universities found",
+                Data = universities
+            });
+        }
     }
 }

@@ -2,147 +2,145 @@
 using API.DTOs.Bookings;
 using API.Models;
 
-namespace API.Services;
-
-public class BookingService
+namespace API.Services
 {
-    private readonly IBookingRepository _bookingRepository;
-
-    public BookingService(IBookingRepository bookingRepository)
+    public class BookingService
     {
-        _bookingRepository = bookingRepository;
-    }
+        private readonly IBookingRepository _bookingRepository;
 
-    public IEnumerable<BookingDto>? GetBooking()
-    {
-        var bookings = _bookingRepository.GetAll();
-        if (!bookings.Any())
+        public BookingService(IBookingRepository bookingRepository)
         {
-            return null; // No bookings found
+            _bookingRepository = bookingRepository;
         }
 
-        var toDto = bookings.Select(booking =>
-                                            new BookingDto
-                                            {
-                                                GUID = booking.GUID,
-                                                StartDate = booking.StartDate,
-                                                EndDate = booking.EndDate,
-                                                Remarks = booking.Remarks,
-                                                Status = booking.Status,
-                                                RoomGUID = booking.RoomGUID,
-                                                EmployeeGUID = booking.EmployeeGUID,
-                                            }).ToList();
-
-        return toDto; // Universities found
-    }
-
-    public BookingDto? GetBooking(Guid guid)
-    {
-        var booking = _bookingRepository.GetByGuid(guid);
-        if (booking is null)
+        public IEnumerable<GetBookingDto>? GetBooking()
         {
-            return null; // Booking not found
+            var bookings = _bookingRepository.GetAll();
+            if (!bookings.Any())
+            {
+                return null; // No Booking  found
+            }
+
+            var toDto = bookings.Select(booking =>
+                                                new GetBookingDto
+                                                {
+                                                    Guid = booking.Guid,
+                                                    StartDate = booking.StartDate,
+                                                    EndDate = booking.EndDate,
+                                                    Status = booking.Status,
+                                                    Remarks = booking.Remarks,
+                                                    RoomGuid = booking.RoomGuid,
+                                                    EmployeeGuid = booking.EmployeeGuid
+                                                }).ToList();
+
+            return toDto; // Booking found
         }
 
-        var toDto = new BookingDto
+        public GetBookingDto? GetBooking(Guid guid)
         {
-            GUID = booking.GUID,
-            StartDate = booking.StartDate,
-            EndDate = booking.EndDate,
-            Remarks = booking.Remarks,
-            Status = booking.Status,
-            RoomGUID = booking.RoomGUID,
-            EmployeeGUID = booking.EmployeeGUID,
-        };
+            var booking = _bookingRepository.GetByGuid(guid);
+            if (booking is null)
+            {
+                return null; // booking not found
+            }
 
-        return toDto; // Universities found
-    }
+            var toDto = new GetBookingDto
+            {
+                Guid = booking.Guid,
+                StartDate = booking.StartDate,
+                EndDate = booking.EndDate,
+                Status = booking.Status,
+                Remarks = booking.Remarks,
+                RoomGuid = booking.RoomGuid,
+                EmployeeGuid = booking.EmployeeGuid
+            };
 
-    public BookingDto? CreateBooking(NewBookingDto newBookingDto)
-    {
-        var booking = new Booking
-        {
-            GUID = new Guid(),
-            StartDate = newBookingDto.StartDate,
-            EndDate = newBookingDto.EndDate,
-            Remarks = newBookingDto.Remarks,
-            Status = newBookingDto.Status,
-            RoomGUID = newBookingDto.RoomGUID,
-            EmployeeGUID = newBookingDto.EmployeeGUID,
-            CreatedDate = DateTime.Now,
-            ModifiedDate = DateTime.Now
-        };
-
-        var createdBooking = _bookingRepository.Create(booking);
-        if (createdBooking is null)
-        {
-            return null; // Booking not created
+            return toDto; // bookings found
         }
 
-        var toDto = new BookingDto
+        public GetBookingDto? CreateBooking(NewBookingDto newBookingDto)
         {
-            GUID = booking.GUID,
-            StartDate = booking.StartDate,
-            EndDate = booking.EndDate,
-            Remarks = booking.Remarks,
-            Status = booking.Status,
-            RoomGUID = booking.RoomGUID,
-            EmployeeGUID = booking.EmployeeGUID,
-        };
+            var booking = new Booking
+            {
+                Guid = new Guid(),
+                StartDate = newBookingDto.StartDate,
+                EndDate = newBookingDto.EndDate,
+                Status = newBookingDto.Status,
+                Remarks = newBookingDto.Remarks,
+                RoomGuid = newBookingDto.RoomGuid,
+                EmployeeGuid = newBookingDto.EmployeeGuid,
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now
+            };
 
-        return toDto; // Booking created
-    }
+            var createdBooking = _bookingRepository.Create(booking);
+            if (createdBooking is null)
+            {
+                return null; // Booking not created
+            }
 
-    public int UpdateBooking(BookingDto updateBookingDto)
-    {
-        var isExist = _bookingRepository.IsExist(updateBookingDto.GUID);
-        if (!isExist)
-        {
-            return -1; // Booking not found
+            var toDto = new GetBookingDto
+            {
+                Guid = createdBooking.Guid,
+                StartDate = newBookingDto.StartDate,
+                EndDate = newBookingDto.EndDate,
+                Status = newBookingDto.Status,
+                Remarks = newBookingDto.Remarks,
+                RoomGuid = newBookingDto.RoomGuid,
+                EmployeeGuid = newBookingDto.EmployeeGuid,
+            };
+
+            return toDto; // Booking created
         }
 
-        var getBooking = _bookingRepository.GetByGuid(updateBookingDto.GUID);
-
-        var booking = new Booking
+        public int UpdateBooking(UpdateBookingDto updateBookingDto)
         {
-            GUID = updateBookingDto.GUID,
-            StartDate = updateBookingDto.StartDate,
-            EndDate = updateBookingDto.EndDate,
-            Remarks = updateBookingDto.Remarks,
-            Status = updateBookingDto.Status,
-            RoomGUID = updateBookingDto.RoomGUID,
-            EmployeeGUID = updateBookingDto.EmployeeGUID,
-            ModifiedDate = DateTime.Now,
-            CreatedDate = getBooking!.CreatedDate
-        };
+            var isExist = _bookingRepository.IsExist(updateBookingDto.Guid);
+            if (!isExist)
+            {
+                return -1; // Booking not found
+            }
 
-        var isUpdate = _bookingRepository.Update(booking);
-        if (!isUpdate)
-        {
-            return 0; // Booking not updated
+            var getBooking = _bookingRepository.GetByGuid(updateBookingDto.Guid);
+
+            var booking = new Booking
+            {
+                Guid = updateBookingDto.Guid,
+                StartDate = updateBookingDto.StartDate,
+                EndDate = updateBookingDto.EndDate,
+                Status = updateBookingDto.Status,
+                Remarks = updateBookingDto.Remarks,
+                RoomGuid = updateBookingDto.RoomGuid,
+                EmployeeGuid = updateBookingDto.EmployeeGuid,
+                ModifiedDate = DateTime.Now,
+                CreatedDate = getBooking!.CreatedDate
+            };
+
+            var isUpdate = _bookingRepository.Update(booking);
+            if (!isUpdate)
+            {
+                return 0; // Booking not updated
+            }
+
+            return 1;
         }
 
-        return 1;
-
-    }
-
-    public int DeleteBooking(Guid guid)
-    {
-        var isExist = _bookingRepository.IsExist(guid);
-        if (!isExist)
+        public int DeleteBooking(Guid guid)
         {
-            return -1; // Booking not found
-        }
+            var isExist = _bookingRepository.IsExist(guid);
+            if (!isExist)
+            {
+                return -1; // Booking not found
+            }
 
-        var booking = _bookingRepository.GetByGuid(guid);
-        var isDelete = _bookingRepository.Delete(booking!.GUID);
-        if (!isDelete)
-        {
-            return 0; // Booking not deleted
-        }
+            var booking = _bookingRepository.GetByGuid(guid);
+            var isDelete = _bookingRepository.Delete(booking!);
+            if (!isDelete)
+            {
+                return 0; // Booking not deleted
+            }
 
-        return 1;
+            return 1;
+        }
     }
 }
-
-

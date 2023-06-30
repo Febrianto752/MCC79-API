@@ -2,121 +2,119 @@
 using API.DTOs.Roles;
 using API.Models;
 
-namespace API.Services;
-public class RoleService
+namespace API.Services
 {
-    private readonly IRoleRepository _roleRepository;
-
-    public RoleService(IRoleRepository roleRepository)
+    public class RoleService
     {
-        _roleRepository = roleRepository;
-    }
-
-    public IEnumerable<RoleDto>? GetRole()
-    {
-        var roles = _roleRepository.GetAll();
-        if (!roles.Any())
+        private readonly IRoleRepository _roleRepository;
+        public RoleService(IRoleRepository roleRepository)
         {
-            return null; // No roles found
+            _roleRepository = roleRepository;
         }
 
-        var toDto = roles.Select(role =>
-                                            new RoleDto
-                                            {
-                                                GUID = role.GUID,
-                                                Name = role.Name
-                                            }).ToList();
-
-        return toDto; // Universities found
-    }
-
-    public RoleDto? GetRole(Guid guid)
-    {
-        var role = _roleRepository.GetByGuid(guid);
-        if (role is null)
+        public IEnumerable<GetRoleDto>? GetRole()
         {
-            return null; // Role not found
+            var roles = _roleRepository.GetAll();
+            if (!roles.Any())
+            {
+                return null; // No role  found
+            }
+
+            var toDto = roles.Select(role =>
+                                                new GetRoleDto
+                                                {
+                                                    Guid = role.Guid,
+                                                    Name = role.Name,
+                                                }).ToList();
+
+            return toDto; // role found
         }
 
-        var toDto = new RoleDto
+        public GetRoleDto? GetRole(Guid guid)
         {
-            GUID = role.GUID,
-            Name = role.Name
-        };
+            var role = _roleRepository.GetByGuid(guid);
+            if (role is null)
+            {
+                return null; // role not found
+            }
 
-        return toDto; // Universities found
-    }
+            var toDto = new GetRoleDto
+            {
+                Guid = role.Guid,
+                Name = role.Name,
+            };
 
-    public RoleDto? CreateRole(NewRoleDto newRoleDto)
-    {
-        var role = new Role
-        {
-            GUID = new Guid(),
-            Name = newRoleDto.Name,
-            CreatedDate = DateTime.Now,
-            ModifiedDate = DateTime.Now
-        };
-
-        var createdRole = _roleRepository.Create(role);
-        if (createdRole is null)
-        {
-            return null; // Role not created
+            return toDto; // roles found
         }
 
-        var toDto = new RoleDto
+        public GetRoleDto? CreateRole(NewRoleDto newRoleDto)
         {
-            GUID = createdRole.GUID,
-            Name = createdRole.Name
-        };
+            var role = new Role
+            {
+                Guid = new Guid(),
+                Name = newRoleDto.Name,
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now
+            };
 
-        return toDto; // Role created
-    }
+            var createdRole = _roleRepository.Create(role);
+            if (createdRole is null)
+            {
+                return null; // role not created
+            }
 
-    public int UpdateRole(RoleDto updateRoleDto)
-    {
-        var isExist = _roleRepository.IsExist(updateRoleDto.GUID);
-        if (!isExist)
-        {
-            return -1; // Role not found
+            var toDto = new GetRoleDto
+            {
+                Guid = role.Guid,
+                Name = role.Name
+            };
+
+            return toDto; // role created
         }
 
-        var getRole = _roleRepository.GetByGuid(updateRoleDto.GUID);
-
-        var role = new Role
+        public int UpdateRole(UpdateRoleDto updateRoleDto)
         {
-            GUID = updateRoleDto.GUID,
-            Name = updateRoleDto.Name,
-            ModifiedDate = DateTime.Now,
-            CreatedDate = getRole!.CreatedDate
-        };
+            var isExist = _roleRepository.IsExist(updateRoleDto.Guid);
+            if (!isExist)
+            {
+                return -1; // role not found
+            }
 
+            var getRole = _roleRepository.GetByGuid(updateRoleDto.Guid);
 
-        var isUpdate = _roleRepository.Update(role);
-        if (!isUpdate)
-        {
-            return 0; // Role not updated
+            var role = new Role
+            {
+                Guid = updateRoleDto.Guid,
+                Name = updateRoleDto.Name,
+                ModifiedDate = DateTime.Now,
+                CreatedDate = getRole!.CreatedDate
+            };
+
+            var isUpdate = _roleRepository.Update(role);
+            if (!isUpdate)
+            {
+                return 0; // role not updated
+            }
+
+            return 1;
         }
 
-        return 1;
-
-    }
-
-    public int DeleteRole(Guid guid)
-    {
-        var isExist = _roleRepository.IsExist(guid);
-        if (!isExist)
+        public int DeleteRole(Guid guid)
         {
-            return -1; // Role not found
-        }
+            var isExist = _roleRepository.IsExist(guid);
+            if (!isExist)
+            {
+                return -1; // role not found
+            }
 
-        var role = _roleRepository.GetByGuid(guid);
-        var isDelete = _roleRepository.Delete(role!.GUID);
-        if (!isDelete)
-        {
-            return 0; // Role not deleted
-        }
+            var role = _roleRepository.GetByGuid(guid);
+            var isDelete = _roleRepository.Delete(role!);
+            if (!isDelete)
+            {
+                return 0; // role not deleted
+            }
 
-        return 1;
+            return 1;
+        }
     }
 }
-

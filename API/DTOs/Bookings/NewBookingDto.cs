@@ -10,12 +10,12 @@ namespace API.DTOs.Bookings
         [Required]
         public DateTime EndDate { get; set; }
         [Required]
-        public string Remarks { get; set; }
-        [Required]
         public StatusLevel Status { get; set; }
         [Required]
-        public Guid RoomGUID { get; set; }
+        public string Remarks { get; set; }
         [Required]
-        public Guid EmployeeGUID { get; set; }
+        public Guid RoomGuid { get; set; }
+        [Required]
+        public Guid EmployeeGuid { get; set; }
     }
 }

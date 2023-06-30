@@ -2,16 +2,20 @@
 using API.Data;
 using API.Models;
 
-namespace API.Repositories;
-
-public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeRepository
+namespace API.Repositories
 {
-    public EmployeeRepository(BookingDBContext context) : base(context)
+    public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeRepository
     {
+        public EmployeeRepository(BookingDbContext context) : base(context) { }
 
+        public Employee? GetByEmailAndPhoneNumber(string data)
+        {
+            return _context.Set<Employee>().FirstOrDefault(e => e.PhoneNumber == data || e.Email == data);
+        }
+
+        public Employee? CheckEmail(string email)
+        {
+            return _context.Set<Employee>().FirstOrDefault(e => e.Email == email);
+        }
     }
-
-
-
 }
-

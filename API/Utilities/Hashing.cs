@@ -1,20 +1,20 @@
-﻿namespace API.Utilities;
-
-public class Hashing
+﻿namespace API.Utilities
 {
-    private static string GenerateSalt()
+    public class Hashing
     {
-        return BCrypt.Net.BCrypt.GenerateSalt(12);
-    }
+        private static string GenerateSalt()
+        {
+            return BCrypt.Net.BCrypt.GenerateSalt(12); // 12 is the default
+        }
 
-    public static string HashPassword(string password)
-    {
-        return BCrypt.Net.BCrypt.HashPassword(password, GenerateSalt());
-    }
+        public static string HashPassword(string password)
+        {
+            return BCrypt.Net.BCrypt.HashPassword(password, GenerateSalt());
+        }
 
-    public bool ValidatePassword(string password, string hashPassword)
-    {
-        return BCrypt.Net.BCrypt.Verify(password, hashPassword);
+        public static bool ValidatePassword(string password, string hashPassword)
+        {
+            return BCrypt.Net.BCrypt.Verify(password, hashPassword);
+        }
     }
 }
-

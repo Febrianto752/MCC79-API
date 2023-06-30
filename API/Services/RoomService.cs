@@ -1,65 +1,68 @@
 ﻿using API.Contracts;
 using API.DTOs.Rooms;
 using API.Models;
+using API.Utilities.Enums;
 
 namespace API.Services;
 
 public class RoomService
 {
     private readonly IRoomRepository _roomRepository;
+    private readonly IBookingRepository _bookingRepository;
 
-    public RoomService(IRoomRepository roomRepository)
+    public RoomService(IRoomRepository roomRepository, IBookingRepository bookingRepository)
     {
         _roomRepository = roomRepository;
+        _bookingRepository = bookingRepository;
     }
 
-    public IEnumerable<RoomDto>? GetRoom()
+    public IEnumerable<GetRoomDto>? GetRoom()
     {
         var rooms = _roomRepository.GetAll();
         if (!rooms.Any())
         {
-            return null; // No rooms found
+            return null; // No room  found
         }
 
         var toDto = rooms.Select(room =>
-                                            new RoomDto
+                                            new GetRoomDto
                                             {
-                                                GUID = room.GUID,
+                                                Guid = room.Guid,
                                                 Name = room.Name,
-                                                Floor = room.Floor,
                                                 Capacity = room.Capacity,
+                                                Floor = room.Floor,
                                             }).ToList();
 
-        return toDto; // Universities found
+        return toDto; // room found
     }
 
-    public RoomDto? GetRoom(Guid guid)
+    public GetRoomDto? GetRoom(Guid guid)
     {
         var room = _roomRepository.GetByGuid(guid);
         if (room is null)
         {
-            return null; // Room not found
+            return null; // room not found
         }
 
-        var toDto = new RoomDto
+        var toDto = new GetRoomDto
         {
-            GUID = room.GUID,
+            Guid = room.Guid,
             Name = room.Name,
-            Floor = room.Floor,
             Capacity = room.Capacity,
+            Floor = room.Floor,
         };
 
-        return toDto; // Universities found
+        return toDto; // rooms found
     }
 
-    public RoomDto? CreateRoom(NewRoomDto newRoomDto)
+    public GetRoomDto? CreateRoom(NewRoomDto newRoomDto)
     {
         var room = new Room
         {
-            GUID = new Guid(),
+            Guid = new Guid(),
             Name = newRoomDto.Name,
-            Floor = newRoomDto.Floor,
             Capacity = newRoomDto.Capacity,
+            Floor = newRoomDto.Floor,
             CreatedDate = DateTime.Now,
             ModifiedDate = DateTime.Now
         };
@@ -67,48 +70,47 @@ public class RoomService
         var createdRoom = _roomRepository.Create(room);
         if (createdRoom is null)
         {
-            return null; // Room not created
+            return null; // room not created
         }
 
-        var toDto = new RoomDto
+        var toDto = new GetRoomDto
         {
-            GUID = room.GUID,
+            Guid = room.Guid,
             Name = room.Name,
-            Floor = room.Floor,
             Capacity = room.Capacity,
+            Floor = room.Floor,
         };
 
-        return toDto; // Room created
+        return toDto; // room created
     }
 
-    public int UpdateRoom(RoomDto updateRoomDto)
+    public int UpdateRoom(UpdateRoomDto updateRoomDto)
     {
-        var isExist = _roomRepository.IsExist(updateRoomDto.GUID);
+        var isExist = _roomRepository.IsExist(updateRoomDto.Guid);
         if (!isExist)
         {
-            return -1; // Room not found
+            return -1; // room not found
         }
 
-        var getRoom = _roomRepository.GetByGuid(updateRoomDto.GUID);
+        var getRole = _roomRepository.GetByGuid(updateRoomDto.Guid);
 
         var room = new Room
         {
-            GUID = updateRoomDto.GUID,
+            Guid = updateRoomDto.Guid,
             Name = updateRoomDto.Name,
-            Floor = updateRoomDto.Floor,
             Capacity = updateRoomDto.Capacity,
+            Floor = updateRoomDto.Floor,
             ModifiedDate = DateTime.Now,
-            CreatedDate = getRoom!.CreatedDate
+            CreatedDate = getRole!.CreatedDate
         };
 
         var isUpdate = _roomRepository.Update(room);
         if (!isUpdate)
         {
-            return 0; // Room not updated
+            return 0; // room not updated
         }
 
         return 1;
-
     }
 
     public int DeleteRoom(Guid guid)
@@ -116,17 +118,60 @@ public class RoomService
         var isExist = _roomRepository.IsExist(guid);
         if (!isExist)
         {
-            return -1; // Room not found
+            return -1; // room not found
         }
 
         var room = _roomRepository.GetByGuid(guid);
-        var isDelete = _roomRepository.Delete(room!.GUID);
+        var isDelete = _roomRepository.Delete(room!);
         if (!isDelete)
         {
-            return 0; // Room not deleted
+            return 0; // room not deleted
         }
 
         return 1;
+    }
+
+    public IEnumerable<UnusedRoomDto> GetUnusedRoom()
+    {
+        var rooms = _roomRepository.GetAll().ToList();
+
+        var usedRooms = from room in _roomRepository.GetAll()
+                        join booking in _bookingRepository.GetAll()
+                        on room.Guid equals booking.RoomGuid
+                        where booking.Status == StatusLevel.OnGoing
+                        select new UnusedRoomDto
+                        {
+                            RoomGuid = room.Guid,
+                            RoomName = room.Name,
+                            Floor = room.Floor,
+                            Capacity = room.Capacity,
+                        };
+
+        List<Room> tmpRooms = new List<Room>(rooms);
+
+        foreach (var room in rooms)
+        {
+            foreach (var usedRoom in usedRooms)
+            {
+                if (room.Guid == usedRoom.RoomGuid)
+                {
+                    tmpRooms.Remove(room);
+                    break;
+                }
+            }
+
+        }
+
+        var unusedRooms = from room in tmpRooms
+                          select new UnusedRoomDto
+                          {
+                              RoomGuid = room.Guid,
+                              RoomName = room.Name,
+                              Floor = room.Floor,
+                              Capacity = room.Capacity
+                          };
+
+        return unusedRooms;
     }
 }
 

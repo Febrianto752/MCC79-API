@@ -2,12 +2,10 @@
 using API.Data;
 using API.Models;
 
-namespace API.Repositories;
-
-public class EducationRepository : GeneralRepository<Education>, IEducationRepository
+namespace API.Repositories
 {
-    public EducationRepository(BookingDBContext context) : base(context)
+    public class EducationRepository : GeneralRepository<Education>, IEducationRepository
     {
+        public EducationRepository(BookingDbContext context) : base(context) { }
     }
 }
-

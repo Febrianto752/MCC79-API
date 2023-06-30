@@ -2,17 +2,15 @@
 
 namespace API.Models
 {
-    // ini anotasi '[]'
     [Table("tb_m_universities")]
     public class University : BaseEntity
     {
         [Column("code", TypeName = "nvarchar(50)")]
         public string Code { get; set; }
-
-        [Column("name", TypeName = "nvarchar(50)")]
+        [Column("name", TypeName = "nvarchar(100)")]
         public string Name { get; set; }
 
-        // cardinality
+        // Cardinality
         public ICollection<Education>? Educations { get; set; }
     }
 }

@@ -1,25 +1,21 @@
 ﻿using API.Utilities;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs.Accounts
 {
-    public class AccountDto
+    public class NewAccountDto
     {
         [Required]
-        public Guid GUID { get; set; }
-
+        public Guid Guid { get; set; }
         [PasswordPolicy]
         public string Password { get; set; }
-
-        [DefaultValue(false)]
+        [Required]
         public bool IsDeleted { get; set; }
-
-        [MinLength(6), MaxLength(6)]
-        public string? OTP { get; set; }
-
+        [Required]
+        public int Otp { get; set; }
+        [Required]
         public bool IsUsed { get; set; }
-
+        [Required]
         public DateTime ExpiredTime { get; set; }
     }
 }

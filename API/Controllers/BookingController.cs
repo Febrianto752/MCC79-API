@@ -4,149 +4,149 @@ using API.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace API.Controllers;
-
-[ApiController]
-[Route("api/v1/bookings")]
-public class BookingController : ControllerBase
+namespace API.Controllers
 {
-    private readonly BookingService _service;
-
-    public BookingController(BookingService service)
+    [ApiController]
+    [Route("api/v1/bookings")]
+    public class BookingController : ControllerBase
     {
-        _service = service;
-    }
+        private readonly BookingService _service;
 
-    [HttpGet]
-    public IActionResult GetAll()
-    {
-        var bookings = _service.GetBooking();
-
-        if (!bookings.Any())
+        public BookingController(BookingService service)
         {
-            return NotFound(new ResponseHandler<BookingDto>
+            _service = service;
+        }
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var entities = _service.GetBooking();
+
+            if (entities == null)
             {
-                Code = StatusCodes.Status404NotFound,
-                Status = HttpStatusCode.NotFound.ToString(),
-                Message = "Data not found"
+                return NotFound(new ResponseHandlers<GetBookingDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Data not found"
+                });
+            }
+
+            return Ok(new ResponseHandlers<IEnumerable<GetBookingDto>>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Data found",
+                Data = entities
             });
         }
 
-        return Ok(new ResponseHandler<IEnumerable<BookingDto>>
+        [HttpGet("{guid}")]
+        public IActionResult GetByGuid(Guid guid)
         {
-            Code = StatusCodes.Status200OK,
-            Status = HttpStatusCode.OK.ToString(),
-            Message = "Data found",
-            Data = bookings
-        });
-    }
-
-    [HttpGet("{guid}")]
-    public IActionResult GetByGuid(Guid guid)
-    {
-        var booking = _service.GetBooking(guid);
-        if (booking is null)
-        {
-            return NotFound(new ResponseHandler<BookingDto>
+            var booking = _service.GetBooking(guid);
+            if (booking is null)
             {
-                Code = StatusCodes.Status404NotFound,
-                Status = HttpStatusCode.NotFound.ToString(),
-                Message = "Data not found"
+                return NotFound(new ResponseHandlers<GetBookingDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Data not found"
+                });
+            }
+
+            return Ok(new ResponseHandlers<GetBookingDto>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Data found",
+                Data = booking
             });
         }
 
-        return Ok(new ResponseHandler<BookingDto>
+        [HttpPost]
+        public IActionResult Create(NewBookingDto newBookingDto)
         {
-            Code = StatusCodes.Status200OK,
-            Status = HttpStatusCode.OK.ToString(),
-            Message = "Data found",
-            Data = booking
-        });
-    }
-
-    [HttpPost]
-    public IActionResult Create(NewBookingDto newBookingDto)
-    {
-        var createdBooking = _service.CreateBooking(newBookingDto);
-        if (createdBooking is null)
-        {
-            return BadRequest(new ResponseHandler<BookingDto>
+            var createBooking = _service.CreateBooking(newBookingDto);
+            if (createBooking is null)
             {
-                Code = StatusCodes.Status400BadRequest,
-                Status = HttpStatusCode.BadRequest.ToString(),
-                Message = "Data not created"
+                return BadRequest(new ResponseHandlers<GetBookingDto>
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Message = "Data not created"
+                });
+            }
+
+            return Ok(new ResponseHandlers<GetBookingDto>
+            {
+                Code = StatusCodes.Status201Created,
+                Status = HttpStatusCode.Created.ToString(),
+                Message = "Successfully created",
+                Data = createBooking
             });
         }
 
-        return Ok(new ResponseHandler<BookingDto>
+        [HttpPut]
+        public IActionResult Update(UpdateBookingDto updateBookingDto)
         {
-            Code = StatusCodes.Status201Created,
-            Status = HttpStatusCode.Created.ToString(),
-            Message = "Successfully created",
-            Data = createdBooking
-        });
-    }
-
-    [HttpPut]
-    public IActionResult Update(BookingDto updateBookingDto)
-    {
-        var update = _service.UpdateBooking(updateBookingDto);
-        if (update is -1)
-        {
-            return NotFound(new ResponseHandler<BookingDto>
+            var update = _service.UpdateBooking(updateBookingDto);
+            if (update is -1)
             {
-                Code = StatusCodes.Status404NotFound,
-                Status = HttpStatusCode.NotFound.ToString(),
-                Message = "Id not found"
-            });
-        }
-        if (update is 0)
-        {
-            return BadRequest(new ResponseHandler<BookingDto>
+                return NotFound(new ResponseHandlers<UpdateBookingDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Id not found"
+                });
+            }
+            if (update is 0)
             {
-                Code = StatusCodes.Status500InternalServerError,
-                Status = HttpStatusCode.InternalServerError.ToString(),
-                Message = "Check your data"
-            });
-        }
-        return Ok(new ResponseHandler<BookingDto>
-        {
-            Code = StatusCodes.Status200OK,
-            Status = HttpStatusCode.OK.ToString(),
-            Message = "Successfully updated"
-        });
-    }
-
-    [HttpDelete]
-    public IActionResult Delete(Guid guid)
-    {
-        var delete = _service.DeleteBooking(guid);
-
-        if (delete is -1)
-        {
-            return NotFound(new ResponseHandler<BookingDto>
+                return BadRequest(new ResponseHandlers<UpdateBookingDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Check your data"
+                });
+            }
+            return Ok(new ResponseHandlers<UpdateBookingDto>
             {
-                Code = StatusCodes.Status404NotFound,
-                Status = HttpStatusCode.NotFound.ToString(),
-                Message = "Id not found"
-            });
-        }
-        if (delete is 0)
-        {
-            return BadRequest(new ResponseHandler<BookingDto>
-            {
-                Code = StatusCodes.Status500InternalServerError,
-                Status = HttpStatusCode.InternalServerError.ToString(),
-                Message = "Check connection to database"
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Successfully updated"
             });
         }
 
-        return Ok(new ResponseHandler<BookingDto>
+        [HttpDelete]
+        public IActionResult Delete(Guid guid)
         {
-            Code = StatusCodes.Status200OK,
-            Status = HttpStatusCode.OK.ToString(),
-            Message = "Successfully deleted"
-        });
+            var delete = _service.DeleteBooking(guid);
+
+            if (delete is -1)
+            {
+                return NotFound(new ResponseHandlers<GetBookingDto>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Message = "Id not found"
+                });
+            }
+            if (delete is 0)
+            {
+                return BadRequest(new ResponseHandlers<GetBookingDto>
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Status = HttpStatusCode.InternalServerError.ToString(),
+                    Message = "Check connection to database"
+                });
+            }
+
+            return Ok(new ResponseHandlers<GetBookingDto>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Successfully deleted"
+            });
+        }
     }
 }
-

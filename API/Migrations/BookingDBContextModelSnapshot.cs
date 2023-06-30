@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Migrations
 {
-    [DbContext(typeof(BookingDBContext))]
-    partial class BookingDBContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(BookingDbContext))]
+    partial class BookingDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -24,13 +24,13 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Account", b =>
                 {
-                    b.Property<Guid>("GUID")
+                    b.Property<Guid>("Guid")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("guid");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_date");
+                        .HasColumnName("created_at");
 
                     b.Property<DateTime>("ExpiredTime")
                         .HasColumnType("datetime2")
@@ -48,9 +48,8 @@ namespace API.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("modified_date");
 
-                    b.Property<string>("OTP")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(6)")
+                    b.Property<int>("Otp")
+                        .HasColumnType("int")
                         .HasColumnName("otp");
 
                     b.Property<string>("Password")
@@ -58,57 +57,57 @@ namespace API.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("password");
 
-                    b.HasKey("GUID");
+                    b.HasKey("Guid");
 
                     b.ToTable("tb_m_accounts");
                 });
 
             modelBuilder.Entity("API.Models.AccountRole", b =>
                 {
-                    b.Property<Guid>("GUID")
+                    b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("guid");
 
-                    b.Property<Guid>("AccountGUID")
+                    b.Property<Guid>("AccountGuid")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("account_guid");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_date");
+                        .HasColumnName("created_at");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("modified_date");
 
-                    b.Property<Guid>("RoleGUID")
+                    b.Property<Guid>("RoleGuid")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("role_guid");
 
-                    b.HasKey("GUID");
+                    b.HasKey("Guid");
 
-                    b.HasIndex("AccountGUID");
+                    b.HasIndex("AccountGuid");
 
-                    b.HasIndex("RoleGUID");
+                    b.HasIndex("RoleGuid");
 
                     b.ToTable("tb_tr_account_roles");
                 });
 
             modelBuilder.Entity("API.Models.Booking", b =>
                 {
-                    b.Property<Guid>("GUID")
+                    b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("guid");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_date");
+                        .HasColumnName("created_at");
 
-                    b.Property<Guid>("EmployeeGUID")
+                    b.Property<Guid>("EmployeeGuid")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("employee_id");
+                        .HasColumnName("employee_guid");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2")
@@ -123,7 +122,7 @@ namespace API.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("remarks");
 
-                    b.Property<Guid>("RoomGUID")
+                    b.Property<Guid>("RoomGuid")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("room_guid");
 
@@ -135,31 +134,31 @@ namespace API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("status");
 
-                    b.HasKey("GUID");
+                    b.HasKey("Guid");
 
-                    b.HasIndex("EmployeeGUID");
+                    b.HasIndex("EmployeeGuid");
 
-                    b.HasIndex("RoomGUID");
+                    b.HasIndex("RoomGuid");
 
-                    b.ToTable("tb_tr_bookings");
+                    b.ToTable("tb_tr_accounts");
                 });
 
             modelBuilder.Entity("API.Models.Education", b =>
                 {
-                    b.Property<Guid>("GUID")
+                    b.Property<Guid>("Guid")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("guid");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_date");
+                        .HasColumnName("created_at");
 
                     b.Property<string>("Degree")
                         .IsRequired()
-                        .HasColumnType("nvarchar(10)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("degree");
 
-                    b.Property<float>("GPA")
+                    b.Property<float>("Gpa")
                         .HasColumnType("real")
                         .HasColumnName("gpa");
 
@@ -172,35 +171,35 @@ namespace API.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("modified_date");
 
-                    b.Property<Guid>("UniversityGUID")
+                    b.Property<Guid>("UniversityGuid")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("university_GUID");
+                        .HasColumnName("university_guid");
 
-                    b.HasKey("GUID");
+                    b.HasKey("Guid");
 
-                    b.HasIndex("UniversityGUID");
+                    b.HasIndex("UniversityGuid");
 
                     b.ToTable("tb_m_educations");
                 });
 
             modelBuilder.Entity("API.Models.Employee", b =>
                 {
-                    b.Property<Guid>("GUID")
+                    b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("guid");
 
-                    b.Property<DateTime>("Birthdate")
+                    b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("birthdate");
+                        .HasColumnName("birth_date");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_date");
+                        .HasColumnName("created_at");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("email");
 
                     b.Property<string>("FirstName")
@@ -217,7 +216,6 @@ namespace API.Migrations
                         .HasColumnName("hiring_date");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("last_name");
 
@@ -225,9 +223,9 @@ namespace API.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("modified_date");
 
-                    b.Property<string>("NIK")
+                    b.Property<string>("Nik")
                         .IsRequired()
-                        .HasColumnType("nvarchar(6)")
+                        .HasColumnType("nchar(6)")
                         .HasColumnName("nik");
 
                     b.Property<string>("PhoneNumber")
@@ -235,9 +233,9 @@ namespace API.Migrations
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("phone_number");
 
-                    b.HasKey("GUID");
+                    b.HasKey("Guid");
 
-                    b.HasIndex("NIK", "Email", "PhoneNumber")
+                    b.HasIndex("Nik", "Email", "PhoneNumber")
                         .IsUnique();
 
                     b.ToTable("tb_m_employees");
@@ -245,14 +243,14 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Role", b =>
                 {
-                    b.Property<Guid>("GUID")
+                    b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("guid");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_date");
+                        .HasColumnName("created_at");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2")
@@ -260,17 +258,17 @@ namespace API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("name");
 
-                    b.HasKey("GUID");
+                    b.HasKey("Guid");
 
                     b.ToTable("tb_m_roles");
                 });
 
             modelBuilder.Entity("API.Models.Room", b =>
                 {
-                    b.Property<Guid>("GUID")
+                    b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("guid");
@@ -281,7 +279,7 @@ namespace API.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_date");
+                        .HasColumnName("created_at");
 
                     b.Property<int>("Floor")
                         .HasColumnType("int")
@@ -293,17 +291,17 @@ namespace API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("name");
 
-                    b.HasKey("GUID");
+                    b.HasKey("Guid");
 
                     b.ToTable("tb_m_rooms");
                 });
 
             modelBuilder.Entity("API.Models.University", b =>
                 {
-                    b.Property<Guid>("GUID")
+                    b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("guid");
@@ -315,7 +313,7 @@ namespace API.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_date");
+                        .HasColumnName("created_at");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2")
@@ -323,10 +321,10 @@ namespace API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("name");
 
-                    b.HasKey("GUID");
+                    b.HasKey("Guid");
 
                     b.ToTable("tb_m_universities");
                 });
@@ -335,7 +333,7 @@ namespace API.Migrations
                 {
                     b.HasOne("API.Models.Employee", "Employee")
                         .WithOne("Account")
-                        .HasForeignKey("API.Models.Account", "GUID")
+                        .HasForeignKey("API.Models.Account", "Guid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -345,14 +343,14 @@ namespace API.Migrations
             modelBuilder.Entity("API.Models.AccountRole", b =>
                 {
                     b.HasOne("API.Models.Account", "Account")
-                        .WithMany("AccountRoles")
-                        .HasForeignKey("AccountGUID")
+                        .WithMany("AccountRole")
+                        .HasForeignKey("AccountGuid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("API.Models.Role", "Role")
-                        .WithMany("AccountRoles")
-                        .HasForeignKey("RoleGUID")
+                        .WithMany("AccountRole")
+                        .HasForeignKey("RoleGuid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -365,13 +363,13 @@ namespace API.Migrations
                 {
                     b.HasOne("API.Models.Employee", "Employee")
                         .WithMany("Bookings")
-                        .HasForeignKey("EmployeeGUID")
+                        .HasForeignKey("EmployeeGuid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("API.Models.Room", "Room")
                         .WithMany("Bookings")
-                        .HasForeignKey("RoomGUID")
+                        .HasForeignKey("RoomGuid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -384,13 +382,13 @@ namespace API.Migrations
                 {
                     b.HasOne("API.Models.Employee", "Employee")
                         .WithOne("Education")
-                        .HasForeignKey("API.Models.Education", "GUID")
+                        .HasForeignKey("API.Models.Education", "Guid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("API.Models.University", "University")
                         .WithMany("Educations")
-                        .HasForeignKey("UniversityGUID")
+                        .HasForeignKey("UniversityGuid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -401,7 +399,7 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Account", b =>
                 {
-                    b.Navigation("AccountRoles");
+                    b.Navigation("AccountRole");
                 });
 
             modelBuilder.Entity("API.Models.Employee", b =>
@@ -415,7 +413,7 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Role", b =>
                 {
-                    b.Navigation("AccountRoles");
+                    b.Navigation("AccountRole");
                 });
 
             modelBuilder.Entity("API.Models.Room", b =>

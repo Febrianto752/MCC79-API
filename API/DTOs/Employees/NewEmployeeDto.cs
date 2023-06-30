@@ -7,16 +7,17 @@ namespace API.DTOs.Employees
     {
         [Required]
         public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
         [Required]
-        public DateTime Birthdate { get; set; }
+        public DateTime BirthDate { get; set; }
         [Required]
-        [Range(0, 1, ErrorMessage = "Must be Female or Male")]
         public GenderEnum Gender { get; set; }
+        [Required]
         public DateTime HiringDate { get; set; }
-        [Required, EmailAddress]
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
-        [Phone]
+        [Required]
         public string PhoneNumber { get; set; }
     }
 }
