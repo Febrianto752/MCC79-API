@@ -1,4 +1,5 @@
 ﻿using API.Contracts;
+using API.DTOs.Bookings;
 using API.DTOs.Rooms;
 using API.Models;
 using API.Utilities.Enums;
@@ -131,7 +132,7 @@ public class RoomService
         return 1;
     }
 
-    public IEnumerable<UnusedRoomDto> GetUnusedRoom()
+    public IEnumerable<UnusedRoomDto> GetUnusedRoom(DateBookingDto dateBookingDto)
     {
         var rooms = _roomRepository.GetAll().ToList();
 

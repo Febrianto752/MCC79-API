@@ -24,7 +24,7 @@ namespace API.Controllers
 
             if (entities == null)
             {
-                return NotFound(new ResponseHandlers<GetAccountDto>
+                return NotFound(new ResponseHandler<GetAccountDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -32,7 +32,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<IEnumerable<GetAccountDto>>
+            return Ok(new ResponseHandler<IEnumerable<GetAccountDto>>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -47,7 +47,7 @@ namespace API.Controllers
             var account = _service.GetAccount(guid);
             if (account is null)
             {
-                return NotFound(new ResponseHandlers<GetAccountDto>
+                return NotFound(new ResponseHandler<GetAccountDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -55,7 +55,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<GetAccountDto>
+            return Ok(new ResponseHandler<GetAccountDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -70,7 +70,7 @@ namespace API.Controllers
             var createAccount = _service.CreateAccount(newAccountDto);
             if (createAccount is null)
             {
-                return BadRequest(new ResponseHandlers<GetAccountDto>
+                return BadRequest(new ResponseHandler<GetAccountDto>
                 {
                     Code = StatusCodes.Status400BadRequest,
                     Status = HttpStatusCode.BadRequest.ToString(),
@@ -78,7 +78,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<GetAccountDto>
+            return Ok(new ResponseHandler<GetAccountDto>
             {
                 Code = StatusCodes.Status201Created,
                 Status = HttpStatusCode.Created.ToString(),
@@ -93,7 +93,7 @@ namespace API.Controllers
             var update = _service.UpdateAccount(updateAccountDto);
             if (update is -1)
             {
-                return NotFound(new ResponseHandlers<UpdateAccountDto>
+                return NotFound(new ResponseHandler<UpdateAccountDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -102,14 +102,14 @@ namespace API.Controllers
             }
             if (update is 0)
             {
-                return BadRequest(new ResponseHandlers<UpdateAccountDto>
+                return BadRequest(new ResponseHandler<UpdateAccountDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
                     Message = "Check your data"
                 });
             }
-            return Ok(new ResponseHandlers<UpdateAccountDto>
+            return Ok(new ResponseHandler<UpdateAccountDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -124,7 +124,7 @@ namespace API.Controllers
 
             if (delete is -1)
             {
-                return NotFound(new ResponseHandlers<GetAccountDto>
+                return NotFound(new ResponseHandler<GetAccountDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -133,7 +133,7 @@ namespace API.Controllers
             }
             if (delete is 0)
             {
-                return BadRequest(new ResponseHandlers<GetAccountDto>
+                return BadRequest(new ResponseHandler<GetAccountDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
@@ -141,7 +141,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<GetAccountDto>
+            return Ok(new ResponseHandler<GetAccountDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),

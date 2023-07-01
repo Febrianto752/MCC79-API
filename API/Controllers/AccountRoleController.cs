@@ -24,7 +24,7 @@ namespace API.Controllers
 
             if (entities == null)
             {
-                return NotFound(new ResponseHandlers<GetAccountRoleDto>
+                return NotFound(new ResponseHandler<GetAccountRoleDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -32,7 +32,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<IEnumerable<GetAccountRoleDto>>
+            return Ok(new ResponseHandler<IEnumerable<GetAccountRoleDto>>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -47,7 +47,7 @@ namespace API.Controllers
             var accountRole = _service.GetAccountRole(guid);
             if (accountRole is null)
             {
-                return NotFound(new ResponseHandlers<GetAccountRoleDto>
+                return NotFound(new ResponseHandler<GetAccountRoleDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -55,7 +55,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<GetAccountRoleDto>
+            return Ok(new ResponseHandler<GetAccountRoleDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -70,7 +70,7 @@ namespace API.Controllers
             var createAccountRole = _service.CreateAccountRole(newAccountRoleDto);
             if (createAccountRole is null)
             {
-                return BadRequest(new ResponseHandlers<GetAccountRoleDto>
+                return BadRequest(new ResponseHandler<GetAccountRoleDto>
                 {
                     Code = StatusCodes.Status400BadRequest,
                     Status = HttpStatusCode.BadRequest.ToString(),
@@ -78,7 +78,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<GetAccountRoleDto>
+            return Ok(new ResponseHandler<GetAccountRoleDto>
             {
                 Code = StatusCodes.Status201Created,
                 Status = HttpStatusCode.Created.ToString(),
@@ -93,7 +93,7 @@ namespace API.Controllers
             var update = _service.UpdateAccountRole(updateAccountRoleDto);
             if (update is -1)
             {
-                return NotFound(new ResponseHandlers<UpdateAccountRoleDto>
+                return NotFound(new ResponseHandler<UpdateAccountRoleDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -102,14 +102,14 @@ namespace API.Controllers
             }
             if (update is 0)
             {
-                return BadRequest(new ResponseHandlers<UpdateAccountRoleDto>
+                return BadRequest(new ResponseHandler<UpdateAccountRoleDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
                     Message = "Check your data"
                 });
             }
-            return Ok(new ResponseHandlers<UpdateAccountRoleDto>
+            return Ok(new ResponseHandler<UpdateAccountRoleDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -124,7 +124,7 @@ namespace API.Controllers
 
             if (delete is -1)
             {
-                return NotFound(new ResponseHandlers<GetAccountRoleDto>
+                return NotFound(new ResponseHandler<GetAccountRoleDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -133,7 +133,7 @@ namespace API.Controllers
             }
             if (delete is 0)
             {
-                return BadRequest(new ResponseHandlers<GetAccountRoleDto>
+                return BadRequest(new ResponseHandler<GetAccountRoleDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
@@ -141,7 +141,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<GetAccountRoleDto>
+            return Ok(new ResponseHandler<GetAccountRoleDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),

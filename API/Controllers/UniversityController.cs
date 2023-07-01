@@ -24,7 +24,7 @@ namespace API.Controllers
 
             if (entities == null)
             {
-                return NotFound(new ResponseHandlers<GetUniversityDto>
+                return NotFound(new ResponseHandler<GetUniversityDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -32,7 +32,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<IEnumerable<GetUniversityDto>>
+            return Ok(new ResponseHandler<IEnumerable<GetUniversityDto>>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -47,7 +47,7 @@ namespace API.Controllers
             var university = _service.GetUniversity(guid);
             if (university is null)
             {
-                return NotFound(new ResponseHandlers<GetUniversityDto>
+                return NotFound(new ResponseHandler<GetUniversityDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -55,7 +55,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<GetUniversityDto>
+            return Ok(new ResponseHandler<GetUniversityDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -70,7 +70,7 @@ namespace API.Controllers
             var createdUniversity = _service.CreateUniversity(newUniversityDto);
             if (createdUniversity is null)
             {
-                return BadRequest(new ResponseHandlers<GetUniversityDto>
+                return BadRequest(new ResponseHandler<GetUniversityDto>
                 {
                     Code = StatusCodes.Status400BadRequest,
                     Status = HttpStatusCode.BadRequest.ToString(),
@@ -78,7 +78,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<GetUniversityDto>
+            return Ok(new ResponseHandler<GetUniversityDto>
             {
                 Code = StatusCodes.Status201Created,
                 Status = HttpStatusCode.Created.ToString(),
@@ -93,7 +93,7 @@ namespace API.Controllers
             var update = _service.UpdateUniversity(updateUniversityDto);
             if (update is -1)
             {
-                return NotFound(new ResponseHandlers<UpdateUniversityDto>
+                return NotFound(new ResponseHandler<UpdateUniversityDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -102,14 +102,14 @@ namespace API.Controllers
             }
             if (update is 0)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandlers<UpdateUniversityDto>
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<UpdateUniversityDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
                     Message = "Check your data"
                 });
             }
-            return Ok(new ResponseHandlers<UpdateUniversityDto>
+            return Ok(new ResponseHandler<UpdateUniversityDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -124,7 +124,7 @@ namespace API.Controllers
 
             if (delete is -1)
             {
-                return NotFound(new ResponseHandlers<GetUniversityDto>
+                return NotFound(new ResponseHandler<GetUniversityDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -133,7 +133,7 @@ namespace API.Controllers
             }
             if (delete is 0)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandlers<GetUniversityDto>
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<GetUniversityDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
@@ -141,7 +141,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<GetUniversityDto>
+            return Ok(new ResponseHandler<GetUniversityDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -155,7 +155,7 @@ namespace API.Controllers
             var universities = _service.GetUniversity(name);
             if (!universities.Any())
             {
-                return NotFound(new ResponseHandlers<GetUniversityDto>
+                return NotFound(new ResponseHandler<GetUniversityDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -163,7 +163,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<IEnumerable<GetUniversityDto>>
+            return Ok(new ResponseHandler<IEnumerable<GetUniversityDto>>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),

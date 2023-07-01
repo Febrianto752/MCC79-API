@@ -24,7 +24,7 @@ namespace API.Controllers
 
             if (entities == null)
             {
-                return NotFound(new ResponseHandlers<GetBookingDto>
+                return NotFound(new ResponseHandler<GetBookingDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -32,7 +32,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<IEnumerable<GetBookingDto>>
+            return Ok(new ResponseHandler<IEnumerable<GetBookingDto>>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -47,7 +47,7 @@ namespace API.Controllers
             var booking = _service.GetBooking(guid);
             if (booking is null)
             {
-                return NotFound(new ResponseHandlers<GetBookingDto>
+                return NotFound(new ResponseHandler<GetBookingDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -55,7 +55,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<GetBookingDto>
+            return Ok(new ResponseHandler<GetBookingDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -70,7 +70,7 @@ namespace API.Controllers
             var createBooking = _service.CreateBooking(newBookingDto);
             if (createBooking is null)
             {
-                return BadRequest(new ResponseHandlers<GetBookingDto>
+                return BadRequest(new ResponseHandler<GetBookingDto>
                 {
                     Code = StatusCodes.Status400BadRequest,
                     Status = HttpStatusCode.BadRequest.ToString(),
@@ -78,7 +78,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<GetBookingDto>
+            return Ok(new ResponseHandler<GetBookingDto>
             {
                 Code = StatusCodes.Status201Created,
                 Status = HttpStatusCode.Created.ToString(),
@@ -93,7 +93,7 @@ namespace API.Controllers
             var update = _service.UpdateBooking(updateBookingDto);
             if (update is -1)
             {
-                return NotFound(new ResponseHandlers<UpdateBookingDto>
+                return NotFound(new ResponseHandler<UpdateBookingDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -102,14 +102,14 @@ namespace API.Controllers
             }
             if (update is 0)
             {
-                return BadRequest(new ResponseHandlers<UpdateBookingDto>
+                return BadRequest(new ResponseHandler<UpdateBookingDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
                     Message = "Check your data"
                 });
             }
-            return Ok(new ResponseHandlers<UpdateBookingDto>
+            return Ok(new ResponseHandler<UpdateBookingDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -124,7 +124,7 @@ namespace API.Controllers
 
             if (delete is -1)
             {
-                return NotFound(new ResponseHandlers<GetBookingDto>
+                return NotFound(new ResponseHandler<GetBookingDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -133,7 +133,7 @@ namespace API.Controllers
             }
             if (delete is 0)
             {
-                return BadRequest(new ResponseHandlers<GetBookingDto>
+                return BadRequest(new ResponseHandler<GetBookingDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
@@ -141,7 +141,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<GetBookingDto>
+            return Ok(new ResponseHandler<GetBookingDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),

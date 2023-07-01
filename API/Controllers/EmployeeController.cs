@@ -24,7 +24,7 @@ namespace API.Controllers
 
             if (entities == null)
             {
-                return NotFound(new ResponseHandlers<GetEmployeeDto>
+                return NotFound(new ResponseHandler<GetEmployeeDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -32,7 +32,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<IEnumerable<GetEmployeeDto>>
+            return Ok(new ResponseHandler<IEnumerable<GetEmployeeDto>>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -47,7 +47,7 @@ namespace API.Controllers
             var employee = _service.GetEmployee(guid);
             if (employee is null)
             {
-                return NotFound(new ResponseHandlers<GetEmployeeDto>
+                return NotFound(new ResponseHandler<GetEmployeeDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -55,7 +55,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<GetEmployeeDto>
+            return Ok(new ResponseHandler<GetEmployeeDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -70,7 +70,7 @@ namespace API.Controllers
             var createEmployee = _service.CreateEmployee(newEmployeeDto);
             if (createEmployee is null)
             {
-                return BadRequest(new ResponseHandlers<GetEmployeeDto>
+                return BadRequest(new ResponseHandler<GetEmployeeDto>
                 {
                     Code = StatusCodes.Status400BadRequest,
                     Status = HttpStatusCode.BadRequest.ToString(),
@@ -78,7 +78,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<GetEmployeeDto>
+            return Ok(new ResponseHandler<GetEmployeeDto>
             {
                 Code = StatusCodes.Status201Created,
                 Status = HttpStatusCode.Created.ToString(),
@@ -93,7 +93,7 @@ namespace API.Controllers
             var update = _service.UpdateEmployee(updateEmployeeDto);
             if (update is -1)
             {
-                return NotFound(new ResponseHandlers<UpdateEmployeeDto>
+                return NotFound(new ResponseHandler<UpdateEmployeeDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -102,14 +102,14 @@ namespace API.Controllers
             }
             if (update is 0)
             {
-                return BadRequest(new ResponseHandlers<UpdateEmployeeDto>
+                return BadRequest(new ResponseHandler<UpdateEmployeeDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
                     Message = "Check your data"
                 });
             }
-            return Ok(new ResponseHandlers<UpdateEmployeeDto>
+            return Ok(new ResponseHandler<UpdateEmployeeDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -124,7 +124,7 @@ namespace API.Controllers
 
             if (delete is -1)
             {
-                return NotFound(new ResponseHandlers<GetEmployeeDto>
+                return NotFound(new ResponseHandler<GetEmployeeDto>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
@@ -133,7 +133,7 @@ namespace API.Controllers
             }
             if (delete is 0)
             {
-                return BadRequest(new ResponseHandlers<GetEmployeeDto>
+                return BadRequest(new ResponseHandler<GetEmployeeDto>
                 {
                     Code = StatusCodes.Status500InternalServerError,
                     Status = HttpStatusCode.InternalServerError.ToString(),
@@ -141,7 +141,7 @@ namespace API.Controllers
                 });
             }
 
-            return Ok(new ResponseHandlers<GetEmployeeDto>
+            return Ok(new ResponseHandler<GetEmployeeDto>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),

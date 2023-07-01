@@ -13,7 +13,7 @@ namespace API.Repositories
             return _context.Set<Employee>().FirstOrDefault(e => e.PhoneNumber == data || e.Email == data);
         }
 
-        public Employee? CheckEmail(string email)
+        public Employee? GetByEmail(string email)
         {
             return _context.Set<Employee>().FirstOrDefault(e => e.Email == email);
         }
