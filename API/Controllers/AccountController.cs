@@ -4,149 +4,177 @@ using API.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace API.Controllers
+namespace API.Controllers;
+
+[ApiController]
+[Route("api/v1/accounts")]
+public class AccountController : ControllerBase
 {
-    [ApiController]
-    [Route("api/v1/accounts")]
-    public class AccountController : ControllerBase
+    private readonly AccountService _service;
+
+    public AccountController(AccountService service)
     {
-        private readonly AccountService _service;
+        _service = service;
+    }
 
-        public AccountController(AccountService service)
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var entities = _service.GetAccount();
+
+        if (entities == null)
         {
-            _service = service;
-        }
-
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            var entities = _service.GetAccount();
-
-            if (entities == null)
+            return NotFound(new ResponseHandler<GetAccountDto>
             {
-                return NotFound(new ResponseHandler<GetAccountDto>
-                {
-                    Code = StatusCodes.Status404NotFound,
-                    Status = HttpStatusCode.NotFound.ToString(),
-                    Message = "Data not found"
-                });
-            }
-
-            return Ok(new ResponseHandler<IEnumerable<GetAccountDto>>
-            {
-                Code = StatusCodes.Status200OK,
-                Status = HttpStatusCode.OK.ToString(),
-                Message = "Data found",
-                Data = entities
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data not found"
             });
         }
 
-        [HttpGet("{guid}")]
-        public IActionResult GetByGuid(Guid guid)
+        return Ok(new ResponseHandler<IEnumerable<GetAccountDto>>
         {
-            var account = _service.GetAccount(guid);
-            if (account is null)
-            {
-                return NotFound(new ResponseHandler<GetAccountDto>
-                {
-                    Code = StatusCodes.Status404NotFound,
-                    Status = HttpStatusCode.NotFound.ToString(),
-                    Message = "Data not found"
-                });
-            }
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data found",
+            Data = entities
+        });
+    }
 
-            return Ok(new ResponseHandler<GetAccountDto>
+    [HttpGet("{guid}")]
+    public IActionResult GetByGuid(Guid guid)
+    {
+        var account = _service.GetAccount(guid);
+        if (account is null)
+        {
+            return NotFound(new ResponseHandler<GetAccountDto>
             {
-                Code = StatusCodes.Status200OK,
-                Status = HttpStatusCode.OK.ToString(),
-                Message = "Data found",
-                Data = account
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data not found"
             });
         }
 
-        [HttpPost]
-        public IActionResult Create(NewAccountDto newAccountDto)
+        return Ok(new ResponseHandler<GetAccountDto>
         {
-            var createAccount = _service.CreateAccount(newAccountDto);
-            if (createAccount is null)
-            {
-                return BadRequest(new ResponseHandler<GetAccountDto>
-                {
-                    Code = StatusCodes.Status400BadRequest,
-                    Status = HttpStatusCode.BadRequest.ToString(),
-                    Message = "Data not created"
-                });
-            }
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data found",
+            Data = account
+        });
+    }
 
-            return Ok(new ResponseHandler<GetAccountDto>
+    [HttpPost]
+    public IActionResult Create(NewAccountDto newAccountDto)
+    {
+        var createAccount = _service.CreateAccount(newAccountDto);
+        if (createAccount is null)
+        {
+            return BadRequest(new ResponseHandler<GetAccountDto>
             {
-                Code = StatusCodes.Status201Created,
-                Status = HttpStatusCode.Created.ToString(),
-                Message = "Successfully created",
-                Data = createAccount
+                Code = StatusCodes.Status400BadRequest,
+                Status = HttpStatusCode.BadRequest.ToString(),
+                Message = "Data not created"
             });
         }
 
-        [HttpPut]
-        public IActionResult Update(UpdateAccountDto updateAccountDto)
+        return Ok(new ResponseHandler<GetAccountDto>
         {
-            var update = _service.UpdateAccount(updateAccountDto);
-            if (update is -1)
+            Code = StatusCodes.Status201Created,
+            Status = HttpStatusCode.Created.ToString(),
+            Message = "Successfully created",
+            Data = createAccount
+        });
+    }
+
+    [HttpPut]
+    public IActionResult Update(UpdateAccountDto updateAccountDto)
+    {
+        var update = _service.UpdateAccount(updateAccountDto);
+        if (update is -1)
+        {
+            return NotFound(new ResponseHandler<UpdateAccountDto>
             {
-                return NotFound(new ResponseHandler<UpdateAccountDto>
-                {
-                    Code = StatusCodes.Status404NotFound,
-                    Status = HttpStatusCode.NotFound.ToString(),
-                    Message = "Id not found"
-                });
-            }
-            if (update is 0)
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Id not found"
+            });
+        }
+        if (update is 0)
+        {
+            return BadRequest(new ResponseHandler<UpdateAccountDto>
             {
-                return BadRequest(new ResponseHandler<UpdateAccountDto>
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Status = HttpStatusCode.InternalServerError.ToString(),
-                    Message = "Check your data"
-                });
-            }
-            return Ok(new ResponseHandler<UpdateAccountDto>
+                Code = StatusCodes.Status500InternalServerError,
+                Status = HttpStatusCode.InternalServerError.ToString(),
+                Message = "Check your data"
+            });
+        }
+        return Ok(new ResponseHandler<UpdateAccountDto>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Successfully updated"
+        });
+    }
+
+    [HttpDelete]
+    public IActionResult Delete(Guid guid)
+    {
+        var delete = _service.DeleteAccount(guid);
+
+        if (delete is -1)
+        {
+            return NotFound(new ResponseHandler<GetAccountDto>
             {
-                Code = StatusCodes.Status200OK,
-                Status = HttpStatusCode.OK.ToString(),
-                Message = "Successfully updated"
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Id not found"
+            });
+        }
+        if (delete is 0)
+        {
+            return BadRequest(new ResponseHandler<GetAccountDto>
+            {
+                Code = StatusCodes.Status500InternalServerError,
+                Status = HttpStatusCode.InternalServerError.ToString(),
+                Message = "Check connection to database"
             });
         }
 
-        [HttpDelete]
-        public IActionResult Delete(Guid guid)
+        return Ok(new ResponseHandler<GetAccountDto>
         {
-            var delete = _service.DeleteAccount(guid);
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Successfully deleted"
+        });
+    }
 
-            if (delete is -1)
+    [HttpPost("forgot-password")]
+    public IActionResult ForgotPassword(ForgotPasswordDto forgotPassword)
+    {
+        var isUpdated = _service.ForgotPassword(forgotPassword);
+        if (isUpdated == 0)
+            return NotFound(new ResponseHandler<string>
             {
-                return NotFound(new ResponseHandler<GetAccountDto>
-                {
-                    Code = StatusCodes.Status404NotFound,
-                    Status = HttpStatusCode.NotFound.ToString(),
-                    Message = "Id not found"
-                });
-            }
-            if (delete is 0)
-            {
-                return BadRequest(new ResponseHandler<GetAccountDto>
-                {
-                    Code = StatusCodes.Status500InternalServerError,
-                    Status = HttpStatusCode.InternalServerError.ToString(),
-                    Message = "Check connection to database"
-                });
-            }
-
-            return Ok(new ResponseHandler<GetAccountDto>
-            {
-                Code = StatusCodes.Status200OK,
-                Status = HttpStatusCode.OK.ToString(),
-                Message = "Successfully deleted"
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Email not found"
             });
-        }
+
+        if (isUpdated is -1)
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseHandler<string>
+            {
+                Code = StatusCodes.Status500InternalServerError,
+                Status = HttpStatusCode.InternalServerError.ToString(),
+                Message = "Error retrieving data from the database"
+            });
+
+        return Ok(new ResponseHandler<string>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Otp has been sent to your email"
+        });
     }
 }
+

@@ -3,6 +3,7 @@ using API.Data;
 using API.Repositories;
 using API.Services;
 using API.Utilities;
+using API.Utilities.Handlers;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +39,13 @@ builder.Services.AddScoped<AuthService>();
 
 // add handler to the container
 builder.Services.AddScoped<ITokenHandler, TokenHandler>();
+
+// Add SmtpClient
+builder.Services.AddTransient<IEmailHandler, EmailHandler>(_ => new EmailHandler(
+    builder.Configuration["EmailService:SmtpServer"],
+    int.Parse(builder.Configuration["EmailService:SmtpPort"]),
+    builder.Configuration["EmailService:FromEmailAddress"]
+));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -3,138 +3,176 @@ using API.DTOs.Accounts;
 using API.Models;
 using API.Utilities;
 
-namespace API.Services
+namespace API.Services;
+
+public class AccountService
 {
-    public class AccountService
+    private readonly IAccountRepository _accountRepository;
+    private readonly IEmployeeRepository _employeeRepository;
+    private readonly IEmailHandler _emailHandler;
+
+
+    public AccountService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IEmailHandler emailHandler)
     {
-        private readonly IAccountRepository _accountRepository;
+        _accountRepository = accountRepository;
+        _employeeRepository = employeeRepository;
+        _emailHandler = emailHandler;
+    }
 
-        public AccountService(IAccountRepository accountRepository)
+    public IEnumerable<GetAccountDto>? GetAccount()
+    {
+        var accounts = _accountRepository.GetAll();
+        if (!accounts.Any())
         {
-            _accountRepository = accountRepository;
+            return null; // No Account  found
         }
 
-        public IEnumerable<GetAccountDto>? GetAccount()
+        var toDto = accounts.Select(account =>
+                                            new GetAccountDto
+                                            {
+                                                Guid = account.Guid,
+                                                IsDeleted = account.IsDeleted,
+                                                IsUsed = account.IsUsed,
+                                                Password = account.Password,
+                                                Otp = account.Otp,
+                                                ExpiredTime = account.ExpiredTime,
+                                            }).ToList();
+
+        return toDto; // Account found
+    }
+
+    public GetAccountDto? GetAccount(Guid guid)
+    {
+        var account = _accountRepository.GetByGuid(guid);
+        if (account is null)
         {
-            var accounts = _accountRepository.GetAll();
-            if (!accounts.Any())
-            {
-                return null; // No Account  found
-            }
-
-            var toDto = accounts.Select(account =>
-                                                new GetAccountDto
-                                                {
-                                                    Guid = account.Guid,
-                                                    IsDeleted = account.IsDeleted,
-                                                    IsUsed = account.IsUsed,
-                                                    Password = account.Password,
-                                                    Otp = account.Otp,
-                                                    ExpiredTime = account.ExpiredTime,
-                                                }).ToList();
-
-            return toDto; // Account found
+            return null; // account not found
         }
 
-        public GetAccountDto? GetAccount(Guid guid)
+        var toDto = new GetAccountDto
         {
-            var account = _accountRepository.GetByGuid(guid);
-            if (account is null)
-            {
-                return null; // account not found
-            }
+            Guid = account.Guid,
+            IsDeleted = account.IsDeleted,
+            IsUsed = account.IsUsed,
+            Password = account.Password,
+            Otp = account.Otp,
+            ExpiredTime = account.ExpiredTime,
+        };
 
-            var toDto = new GetAccountDto
-            {
-                Guid = account.Guid,
-                IsDeleted = account.IsDeleted,
-                IsUsed = account.IsUsed,
-                Password = account.Password,
-                Otp = account.Otp,
-                ExpiredTime = account.ExpiredTime,
-            };
+        return toDto; // accounts found
+    }
 
-            return toDto; // accounts found
+    public GetAccountDto? CreateAccount(NewAccountDto newAccountDto)
+    {
+        var account = new Account
+        {
+            Guid = newAccountDto.Guid,
+            IsDeleted = newAccountDto.IsDeleted,
+            IsUsed = newAccountDto.IsUsed,
+            CreatedDate = DateTime.Now,
+            ModifiedDate = DateTime.Now,
+            Password = HashingHandler.HashPassword(newAccountDto.Password),
+            ExpiredTime = newAccountDto.ExpiredTime,
+            Otp = newAccountDto.Otp
+        };
+
+        var createdAccount = _accountRepository.Create(account);
+        if (createdAccount is null)
+        {
+            return null; // Account not created
         }
 
-        public GetAccountDto? CreateAccount(NewAccountDto newAccountDto)
+        var toDto = new GetAccountDto
         {
-            var account = new Account
-            {
-                Guid = newAccountDto.Guid,
-                IsDeleted = newAccountDto.IsDeleted,
-                IsUsed = newAccountDto.IsUsed,
-                CreatedDate = DateTime.Now,
-                ModifiedDate = DateTime.Now,
-                Password = HashingHandler.HashPassword(newAccountDto.Password),
-                ExpiredTime = newAccountDto.ExpiredTime,
-                Otp = newAccountDto.Otp
-            };
+            Guid = createdAccount.Guid,
+            IsDeleted = createdAccount.IsDeleted,
+            IsUsed = createdAccount.IsUsed,
+            Password = createdAccount.Password,
+        };
 
-            var createdAccount = _accountRepository.Create(account);
-            if (createdAccount is null)
-            {
-                return null; // Account not created
-            }
+        return toDto; // Account created
+    }
 
-            var toDto = new GetAccountDto
-            {
-                Guid = createdAccount.Guid,
-                IsDeleted = createdAccount.IsDeleted,
-                IsUsed = createdAccount.IsUsed,
-                Password = createdAccount.Password,
-            };
-
-            return toDto; // Account created
+    public int UpdateAccount(UpdateAccountDto updateAccountDto)
+    {
+        var isExist = _accountRepository.IsExist(updateAccountDto.Guid);
+        if (!isExist)
+        {
+            return -1; // Account not found
         }
 
-        public int UpdateAccount(UpdateAccountDto updateAccountDto)
+        var getAccount = _accountRepository.GetByGuid(updateAccountDto.Guid);
+
+        var account = new Account
         {
-            var isExist = _accountRepository.IsExist(updateAccountDto.Guid);
-            if (!isExist)
-            {
-                return -1; // Account not found
-            }
+            Guid = updateAccountDto.Guid,
+            IsUsed = updateAccountDto.IsUsed,
+            IsDeleted = updateAccountDto.IsDeleted,
+            ModifiedDate = DateTime.Now,
+            CreatedDate = getAccount!.CreatedDate,
+            Otp = updateAccountDto.Otp,
+            ExpiredTime = updateAccountDto.ExpiredTime,
+            Password = HashingHandler.HashPassword(updateAccountDto.Password),
+        };
 
-            var getAccount = _accountRepository.GetByGuid(updateAccountDto.Guid);
-
-            var account = new Account
-            {
-                Guid = updateAccountDto.Guid,
-                IsUsed = updateAccountDto.IsUsed,
-                IsDeleted = updateAccountDto.IsDeleted,
-                ModifiedDate = DateTime.Now,
-                CreatedDate = getAccount!.CreatedDate,
-                Otp = updateAccountDto.Otp,
-                ExpiredTime = updateAccountDto.ExpiredTime,
-                Password = HashingHandler.HashPassword(updateAccountDto.Password),
-            };
-
-            var isUpdate = _accountRepository.Update(account);
-            if (!isUpdate)
-            {
-                return 0; // Account not updated
-            }
-
-            return 1;
+        var isUpdate = _accountRepository.Update(account);
+        if (!isUpdate)
+        {
+            return 0; // Account not updated
         }
 
-        public int DeleteAccount(Guid guid)
+        return 1;
+    }
+
+    public int DeleteAccount(Guid guid)
+    {
+        var isExist = _accountRepository.IsExist(guid);
+        if (!isExist)
         {
-            var isExist = _accountRepository.IsExist(guid);
-            if (!isExist)
-            {
-                return -1; // Account not found
-            }
-
-            var account = _accountRepository.GetByGuid(guid);
-            var isDelete = _accountRepository.Delete(account!);
-            if (!isDelete)
-            {
-                return 0; // Account not deleted
-            }
-
-            return 1;
+            return -1; // Account not found
         }
+
+        var account = _accountRepository.GetByGuid(guid);
+        var isDelete = _accountRepository.Delete(account!);
+        if (!isDelete)
+        {
+            return 0; // Account not deleted
+        }
+
+        return 1;
+    }
+
+    public int ForgotPassword(ForgotPasswordDto forgotPassword)
+    {
+        var employee = _employeeRepository.GetByEmail(forgotPassword.Email);
+        if (employee is null)
+            return 0; // Email not found
+
+        var account = _accountRepository.GetByGuid(employee.Guid);
+        if (account is null)
+            return -1;
+
+        var otp = new Random().Next(111111, 999999);
+        var isUpdated = _accountRepository.Update(new Account
+        {
+            Guid = account.Guid,
+            Password = account.Password,
+            IsDeleted = account.IsDeleted,
+            Otp = otp,
+            ExpiredTime = DateTime.Now.AddMinutes(5),
+            IsUsed = false,
+            CreatedDate = account.CreatedDate,
+            ModifiedDate = DateTime.Now
+        });
+
+        if (!isUpdated)
+            return -1;
+
+        _emailHandler.SendEmail(forgotPassword.Email,
+                                "Forgot Password",
+                                $"Your OTP is {otp}");
+
+        return 1;
     }
 }
+
