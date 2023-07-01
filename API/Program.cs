@@ -2,7 +2,6 @@ using API.Contracts;
 using API.Data;
 using API.Repositories;
 using API.Services;
-using API.Utilities;
 using API.Utilities.Handlers;
 using Microsoft.EntityFrameworkCore;
 

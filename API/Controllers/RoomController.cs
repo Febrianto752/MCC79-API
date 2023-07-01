@@ -1,7 +1,7 @@
 ﻿using API.DTOs.Bookings;
 using API.DTOs.Rooms;
 using API.Services;
-using API.Utilities;
+using API.Utilities.Handlers;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 

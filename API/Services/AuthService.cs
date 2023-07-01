@@ -1,7 +1,7 @@
 ﻿using API.Contracts;
 using API.DTOs.Auth;
 using API.Models;
-using API.Utilities;
+using API.Utilities.Handlers;
 using System.Data;
 using System.Security.Claims;
 

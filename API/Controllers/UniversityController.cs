@@ -1,6 +1,6 @@
 ﻿using API.DTOs.Universities;
 using API.Services;
-using API.Utilities;
+using API.Utilities.Handlers;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
