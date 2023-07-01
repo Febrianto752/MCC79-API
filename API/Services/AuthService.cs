@@ -62,7 +62,7 @@ public class AuthService
                 IsUsed = true,
                 Otp = 0,
                 ExpiredTime = DateTime.Now,
-                Password = Hashing.HashPassword(registerDto.Password),
+                Password = HashingHandler.HashPassword(registerDto.Password),
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now,
             };
@@ -192,7 +192,7 @@ public class AuthService
             CreatedDate = getAccount!.CreatedDate,
             Otp = getAccount.Otp,
             ExpiredTime = getAccount.ExpiredTime,
-            Password = Hashing.HashPassword(changePasswordDto.NewPassword),
+            Password = HashingHandler.HashPassword(changePasswordDto.NewPassword),
         };
 
         var isUpdate = _accountRepository.Update(account);
@@ -215,7 +215,7 @@ public class AuthService
         if (account is null)
             return "0";
 
-        if (!Hashing.ValidatePassword(signinDto.Password, account!.Password))
+        if (!HashingHandler.ValidatePassword(signinDto.Password, account!.Password))
             return "-1";
 
         try

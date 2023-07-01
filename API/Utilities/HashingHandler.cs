@@ -1,6 +1,6 @@
 ﻿namespace API.Utilities
 {
-    public class Hashing
+    public class HashingHandler
     {
         private static string GenerateSalt()
         {

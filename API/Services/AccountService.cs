@@ -66,7 +66,7 @@ namespace API.Services
                 IsUsed = newAccountDto.IsUsed,
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now,
-                Password = Hashing.HashPassword(newAccountDto.Password),
+                Password = HashingHandler.HashPassword(newAccountDto.Password),
                 ExpiredTime = newAccountDto.ExpiredTime,
                 Otp = newAccountDto.Otp
             };
@@ -107,7 +107,7 @@ namespace API.Services
                 CreatedDate = getAccount!.CreatedDate,
                 Otp = updateAccountDto.Otp,
                 ExpiredTime = updateAccountDto.ExpiredTime,
-                Password = Hashing.HashPassword(updateAccountDto.Password),
+                Password = HashingHandler.HashPassword(updateAccountDto.Password),
             };
 
             var isUpdate = _accountRepository.Update(account);
