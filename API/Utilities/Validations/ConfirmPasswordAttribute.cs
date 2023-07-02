@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace API.Utilities
+namespace API.Utilities.Validations
 {
     public class ConfirmPasswordAttribute : ValidationAttribute
     {

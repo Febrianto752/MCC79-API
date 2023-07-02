@@ -1,5 +1,5 @@
-﻿using API.Utilities;
-using API.Utilities.Enums;
+﻿using API.Utilities.Enums;
+using API.Utilities.Validations;
 using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs.Auth

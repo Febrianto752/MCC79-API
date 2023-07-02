@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace API.Utilities
+namespace API.Utilities.Validations
 {
     public class PasswordPolicyAttribute : ValidationAttribute
     {

@@ -1,4 +1,4 @@
-﻿using API.Utilities;
+﻿using API.Utilities.Validations;
 using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs.Auth
