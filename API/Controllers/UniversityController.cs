@@ -1,6 +1,8 @@
 ﻿using API.DTOs.Universities;
 using API.Services;
+using API.Utilities.Enums;
 using API.Utilities.Handlers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -8,6 +10,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/v1/universities")]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}")]
     public class UniversityController : ControllerBase
     {
         private readonly UniversityService _service;
@@ -18,6 +21,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetAll()
         {
             var entities = _service.GetUniversity();

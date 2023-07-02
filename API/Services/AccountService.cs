@@ -1,5 +1,6 @@
 ﻿using API.Contracts;
 using API.DTOs.Accounts;
+using API.DTOs.Auth;
 using API.Models;
 using API.Utilities.Handlers;
 
@@ -173,6 +174,51 @@ public class AccountService
                                 $"Your OTP is {otp}");
 
         return 1;
+    }
+
+    public int ChangePassword(ChangePasswordDto changePasswordDto)
+    {
+        var isExist = _employeeRepository.GetByEmail(changePasswordDto.Email);
+        if (isExist is null)
+        {
+            return -1; // Account not found
+        }
+
+        var getAccount = _accountRepository.GetByGuid(isExist.Guid);
+        if (getAccount.Otp != changePasswordDto.Otp)
+        {
+            return 0;
+        }
+
+        if (getAccount.IsUsed == true)
+        {
+            return 1;
+        }
+
+        if (getAccount.ExpiredTime < DateTime.Now)
+        {
+            return 2;
+        }
+
+        var account = new Account
+        {
+            Guid = getAccount.Guid,
+            IsUsed = true,
+            IsDeleted = getAccount.IsDeleted,
+            ModifiedDate = DateTime.Now,
+            CreatedDate = getAccount!.CreatedDate,
+            Otp = getAccount.Otp,
+            ExpiredTime = getAccount.ExpiredTime,
+            Password = HashingHandler.HashPassword(changePasswordDto.NewPassword),
+        };
+
+        var isUpdate = _accountRepository.Update(account);
+        if (!isUpdate)
+        {
+            return 0; // Account not updated
+        }
+
+        return 3;
     }
 }
 

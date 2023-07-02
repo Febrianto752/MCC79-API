@@ -3,12 +3,39 @@ using API.Data;
 using API.Repositories;
 using API.Services;
 using API.Utilities.Handlers;
+using API.Utilities.Validations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Net;
+using System.Text;
+using Handlers = API.Utilities.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+//builder.Services.AddControllers();
+
+builder.Services.AddControllers()
+       .ConfigureApiBehaviorOptions(options =>
+       {
+           // Custom validation response
+           options.InvalidModelStateResponseFactory = context =>
+           {
+               var errors = context.ModelState.Values
+                                   .SelectMany(v => v.Errors)
+                                   .Select(v => v.ErrorMessage);
+
+               return new BadRequestObjectResult(new ResponseValidationHandler
+               {
+                   Code = StatusCodes.Status400BadRequest,
+                   Status = HttpStatusCode.BadRequest.ToString(),
+                   Message = "Validation error",
+                   Errors = errors.ToArray()
+               });
+           };
+       });
 
 // Add DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -37,7 +64,26 @@ builder.Services.AddScoped<RoomService>();
 builder.Services.AddScoped<AuthService>();
 
 // add handler to the container
-builder.Services.AddScoped<ITokenHandler, TokenHandler>();
+builder.Services.AddScoped<GenerateHandler>();
+builder.Services.AddScoped<ITokenHandler, Handlers.TokenHandler>();
+
+// Jwt Configuration
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+       .AddJwtBearer(options =>
+       {
+           options.RequireHttpsMetadata = false; // For development, jiak production maka true
+           options.SaveToken = true; // untuk mengharuskan menyimpan token di req header
+           options.TokenValidationParameters = new TokenValidationParameters()
+           {
+               ValidateIssuer = true,
+               ValidIssuer = builder.Configuration["JWTService:Issuer"],
+               ValidateAudience = true,
+               ValidAudience = builder.Configuration["JWTService:Audience"],
+               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTService:Key"])),
+               ValidateLifetime = true,
+               ClockSkew = TimeSpan.Zero
+           };
+       });
 
 // Add SmtpClient
 builder.Services.AddTransient<IEmailHandler, EmailHandler>(_ => new EmailHandler(
@@ -59,8 +105,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
