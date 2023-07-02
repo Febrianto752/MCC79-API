@@ -197,5 +197,29 @@ public class BookingController : ControllerBase
             Data = bookingDetails
         });
     }
+
+    [HttpGet("time-length")]
+    public IActionResult GetBookingLengths()
+    {
+        var bookingDurations = _service.GetBookingDurations();
+
+        if (bookingDurations is null)
+        {
+            return NotFound(new ResponseHandler<string>
+            {
+                Code = StatusCodes.Status404NotFound,
+                Status = HttpStatusCode.NotFound.ToString(),
+                Message = "Data not found"
+            });
+        }
+
+        return Ok(new ResponseHandler<IEnumerable<BookingLengthDto>>
+        {
+            Code = StatusCodes.Status200OK,
+            Status = HttpStatusCode.OK.ToString(),
+            Message = "Data found",
+            Data = bookingDurations
+        });
+    }
 }
 

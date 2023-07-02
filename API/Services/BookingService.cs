@@ -7,10 +7,12 @@ namespace API.Services;
 public class BookingService
 {
     private readonly IBookingRepository _bookingRepository;
+    private readonly IRoomRepository _roomRepository;
 
-    public BookingService(IBookingRepository bookingRepository)
+    public BookingService(IBookingRepository bookingRepository, IRoomRepository roomRepository)
     {
         _bookingRepository = bookingRepository;
+        _roomRepository = roomRepository;
     }
 
     public IEnumerable<GetBookingDto>? GetBooking()
@@ -167,6 +169,61 @@ public class BookingService
         var bookingWithRelationByGuid = bookingsWithRelation.FirstOrDefault(b => b.Guid == guid);
 
         return bookingWithRelationByGuid;
+    }
+
+    public IEnumerable<BookingLengthDto>? GetBookingDurations()
+    {
+        var bookingRooms = (from booking in _bookingRepository.GetAll()
+                            join room in _roomRepository.GetAll()
+                            on booking.RoomGuid equals room.Guid
+                            select new BookingRoomDto
+                            {
+                                RoomGuid = room.Guid,
+                                StartDate = booking.StartDate,
+                                EndDate = booking.EndDate,
+                                RoomName = room.Name,
+                            }
+                            ).ToList();
+
+        if (bookingRooms.Count == 0)
+        {
+            return null;
+        }
+
+        var bookingDurations = new List<BookingLengthDto>();
+
+        foreach (var bookingRoom in bookingRooms)
+        {
+            TimeSpan duration = bookingRoom.EndDate - bookingRoom.StartDate;
+
+            int totalDays = (int)duration.TotalDays;
+            int weekends = 0;
+
+            for (int i = 0; i <= totalDays; i++)
+            {
+                var currentDate = bookingRoom.StartDate.AddDays(i);
+
+                if (currentDate.DayOfWeek == DayOfWeek.Saturday || currentDate.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    weekends++;
+                }
+            }
+
+            TimeSpan bookingLength = duration - TimeSpan.FromDays(weekends);
+            string bookingLengthFormat = $"{bookingLength.Days} Hari, {bookingLength.Hours} Jam, {bookingLength.Minutes} Menit";
+
+            var bookingLengthDto = new BookingLengthDto
+            {
+                RoomGuid = bookingRoom.RoomGuid,
+                RoomName = bookingRoom.RoomName,
+                BookingLength = bookingLengthFormat
+            };
+
+            bookingDurations.Add(bookingLengthDto);
+
+        }
+
+        return bookingDurations;
 
     }
 }
