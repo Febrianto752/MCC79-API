@@ -1,6 +1,7 @@
 ﻿using API.DTOs.Auth;
 using API.Services;
 using API.Utilities.Handlers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -8,6 +9,7 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/v1/auth")]
+[AllowAnonymous]
 public class AuthController : ControllerBase
 {
     private readonly AuthService _authService;

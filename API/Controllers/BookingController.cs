@@ -1,6 +1,8 @@
 ﻿using API.DTOs.Bookings;
 using API.Services;
+using API.Utilities.Enums;
 using API.Utilities.Handlers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -18,6 +20,7 @@ public class BookingController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}, {nameof(RoleLevel.Manager)}")]
     public IActionResult GetAll()
     {
         var entities = _service.GetBooking();
@@ -42,6 +45,7 @@ public class BookingController : ControllerBase
     }
 
     [HttpGet("{guid}")]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}, {nameof(RoleLevel.Manager)}")]
     public IActionResult GetByGuid(Guid guid)
     {
         var booking = _service.GetBooking(guid);
@@ -65,6 +69,7 @@ public class BookingController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}, {nameof(RoleLevel.User)}")]
     public IActionResult Create(NewBookingDto newBookingDto)
     {
         var createBooking = _service.CreateBooking(newBookingDto);
@@ -88,6 +93,7 @@ public class BookingController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}, {nameof(RoleLevel.Manager)}")]
     public IActionResult Update(UpdateBookingDto updateBookingDto)
     {
         var update = _service.UpdateBooking(updateBookingDto);
@@ -118,6 +124,7 @@ public class BookingController : ControllerBase
     }
 
     [HttpDelete]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}, {nameof(RoleLevel.Manager)}")]
     public IActionResult Delete(Guid guid)
     {
         var delete = _service.DeleteBooking(guid);
@@ -150,12 +157,12 @@ public class BookingController : ControllerBase
     }
 
     [HttpGet("details")]
-
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}, {nameof(RoleLevel.Manager)}")]
     public IActionResult GetBookingsDetails()
     {
         var bookingsDetails = _service.GetBookingsDetails();
 
-        if (bookingsDetails is null)
+        if (bookingsDetails is null || bookingsDetails.Count() == 0)
         {
             return NotFound(new ResponseHandler<GetBookingDto>
             {
@@ -175,6 +182,7 @@ public class BookingController : ControllerBase
     }
 
     [HttpGet("details/{bookingGuid}")]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}, {nameof(RoleLevel.Manager)}")]
     public IActionResult GetBookingDetailsByGuid(Guid bookingGuid)
     {
         var bookingDetails = _service.GetBookingDetailsByGuid(bookingGuid);
@@ -199,6 +207,7 @@ public class BookingController : ControllerBase
     }
 
     [HttpGet("time-length")]
+    [Authorize(Roles = $"{nameof(RoleLevel.Admin)}, {nameof(RoleLevel.Manager)}")]
     public IActionResult GetBookingLengths()
     {
         var bookingDurations = _service.GetBookingDurations();
