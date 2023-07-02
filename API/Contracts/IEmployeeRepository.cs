@@ -4,7 +4,8 @@ namespace API.Contracts
 {
     public interface IEmployeeRepository : IGeneralRepository<Employee>
     {
-        Employee? GetByEmailAndPhoneNumber(string data);
-        Employee? GetByEmail(string email);
+        public Employee? GetByEmailAndPhoneNumber(string data);
+        public Employee? GetByEmail(string email);
+        public string? GetLastEmpoyeeNik();
     }
 }

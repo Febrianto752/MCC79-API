@@ -1,5 +1,7 @@
 ﻿using API.Contracts;
+using API.Data;
 using API.DTOs.Auth;
+using API.DTOs.Universities;
 using API.Models;
 using API.Utilities.Handlers;
 using System.Data;
@@ -9,6 +11,7 @@ namespace API.Services;
 
 public class AuthService
 {
+    private readonly BookingDbContext _context;
     private readonly IAccountRepository _accountRepository;
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IUniversityRepository _universityRepository;
@@ -18,7 +21,7 @@ public class AuthService
     private readonly ITokenHandler _tokenHandler;
 
 
-    public AuthService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IUniversityRepository universityRepository, IEducationRepository educationRepository, IRoleRepository roleRepository, IAccountRoleRepository accountRoleRepository, ITokenHandler tokenHandler)
+    public AuthService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IUniversityRepository universityRepository, IEducationRepository educationRepository, IRoleRepository roleRepository, IAccountRoleRepository accountRoleRepository, ITokenHandler tokenHandler, BookingDbContext context)
     {
         _accountRepository = accountRepository;
         _employeeRepository = employeeRepository;
@@ -28,15 +31,23 @@ public class AuthService
         _roleRepository = roleRepository;
 
         _tokenHandler = tokenHandler;
+
+        _context = context;
     }
 
-    public RegisterDto Register(RegisterDto registerDto)
+    public bool Register(RegisterDto registerDto)
     {
+        using var transaction = _context.Database.BeginTransaction();
         try
         {
+            var university = _universityRepository.CreateWithDuplicateCheck(new NewUniversityDto
+            {
+                Code = registerDto.UniversityCode,
+                Name = registerDto.UniversityName,
+            });
+
             var employee = new Employee
             {
-                Guid = new Guid(),
                 PhoneNumber = registerDto.PhoneNumber,
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName ?? "",
@@ -44,15 +55,13 @@ public class AuthService
                 HiringDate = registerDto.HiringDate,
                 Email = registerDto.Email,
                 BirthDate = registerDto.BirthDate,
-                Nik = GenericNik(),
-                CreatedDate = DateTime.Now,
-                ModifiedDate = DateTime.Now
+                Nik = GenerateHandler.Nik(_employeeRepository.GetLastEmpoyeeNik()),
             };
             var createdEmployee = _employeeRepository.Create(employee);
 
             if (createdEmployee == null)
             {
-                return new RegisterDto();
+                return false;
             }
 
             var account = new Account
@@ -68,17 +77,7 @@ public class AuthService
             };
             var createdAccount = _accountRepository.Create(account);
 
-            if (createdAccount == null)
-            {
-                return new RegisterDto();
-            }
-
             var roleUser = _roleRepository.GetAll().FirstOrDefault(role => role.Name == "Admin");
-
-            if (roleUser == null)
-            {
-                return new RegisterDto();
-            }
 
             var accountRole = new AccountRole
             {
@@ -86,22 +85,6 @@ public class AuthService
                 RoleGuid = roleUser.Guid
             };
             var createdAccountRole = _accountRoleRepository.Create(accountRole);
-
-
-            var university = new University
-            {
-                Guid = new Guid(),
-                Code = registerDto.UniversityCode,
-                Name = registerDto.UniversityName,
-                CreatedDate = DateTime.Now,
-                ModifiedDate = DateTime.Now,
-            };
-            var createdUniversity = _universityRepository.Create(university);
-
-            if (createdUniversity == null)
-            {
-                return new RegisterDto();
-            }
 
             var education = new Education
             {
@@ -115,48 +98,15 @@ public class AuthService
             };
             var createdEducation = _educationRepository.Create(education);
 
-            if (createdEducation == null)
-            {
-                return new RegisterDto();
-            }
-
-            var toDto = new RegisterDto
-            {
-                FirstName = createdEmployee.FirstName,
-                LastName = createdEmployee.LastName,
-                BirthDate = createdEmployee.BirthDate,
-                Gender = createdEmployee.Gender,
-                HiringDate = createdEmployee.HiringDate,
-                Email = createdEmployee.Email,
-                PhoneNumber = createdEmployee.PhoneNumber,
-                Major = createdEducation.Major,
-                Degree = createdEducation.Degree,
-                Gpa = createdEducation.Gpa,
-                UniversityCode = createdUniversity.Code,
-                UniversityName = createdUniversity.Name,
-                Password = createdAccount.Password,
-                ConfirmPassword = createdAccount.Password
-            };
-            return toDto;
+            transaction.Commit();
+            return true;
         }
         catch
         {
-            return null;
+            transaction.Rollback();
+            return false;
         }
 
-    }
-
-    public string GenericNik()
-    {
-        var employees = _employeeRepository.GetAll().OrderBy(e => e.Nik).LastOrDefault();
-        if (employees is null)
-        {
-            return "111111";
-        }
-
-        var nik = int.Parse(employees.Nik) + 1;
-
-        return nik.ToString();
     }
 
     public int ChangePassword(ChangePasswordDto changePasswordDto)

@@ -1,5 +1,4 @@
 ﻿using API.DTOs.Auth;
-using API.DTOs.Bookings;
 using API.Services;
 using API.Utilities.Handlers;
 using Microsoft.AspNetCore.Mvc;
@@ -21,10 +20,10 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public ActionResult Register(RegisterDto registerDto)
     {
-        var createRegister = _authService.Register(registerDto);
-        if (createRegister is null)
+        var createdRegister = _authService.Register(registerDto);
+        if (createdRegister is false)
         {
-            return BadRequest(new ResponseHandler<GetBookingDto>
+            return BadRequest(new ResponseHandler<string>
             {
                 Code = StatusCodes.Status400BadRequest,
                 Status = HttpStatusCode.BadRequest.ToString(),
@@ -32,12 +31,11 @@ public class AuthController : ControllerBase
             });
         }
 
-        return Ok(new ResponseHandler<RegisterDto>
+        return Ok(new ResponseHandler<string>
         {
             Code = StatusCodes.Status201Created,
             Status = HttpStatusCode.Created.ToString(),
-            Message = "Successfully created",
-            Data = createRegister
+            Message = "Successfully registered",
         });
     }
 

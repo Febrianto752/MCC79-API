@@ -7,7 +7,7 @@ using System.Net;
 namespace API.Controllers
 {
     [ApiController]
-    [Route("api/v1/account-role/roles")]
+    [Route("api/v1/account-role")]
     public class AccountRoleController : ControllerBase
     {
         private readonly AccountRoleService _service;

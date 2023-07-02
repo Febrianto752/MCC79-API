@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using API.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs.Universities
 {
@@ -8,5 +9,26 @@ namespace API.DTOs.Universities
         public string Code { get; set; }
         [Required]
         public string Name { get; set; }
+
+        public static implicit operator University(NewUniversityDto newUniversityDto)
+        {
+            return new()
+            {
+                Guid = new Guid(),
+                Code = newUniversityDto.Code,
+                Name = newUniversityDto.Name,
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now
+            };
+        }
+
+        public static explicit operator NewUniversityDto(University university)
+        {
+            return new()
+            {
+                Code = university.Code,
+                Name = university.Name
+            };
+        }
     }
 }
