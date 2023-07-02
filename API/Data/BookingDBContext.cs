@@ -34,7 +34,7 @@ namespace API.Data
                             e.PhoneNumber
                         }).IsUnique();
 
-           
+
             // University - Education (One to Many)
             modelBuilder.Entity<University>()
                         .HasMany(university => university.Educations)

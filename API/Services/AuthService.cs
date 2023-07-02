@@ -77,7 +77,7 @@ public class AuthService
             };
             var createdAccount = _accountRepository.Create(account);
 
-            var roleUser = _roleRepository.GetAll().FirstOrDefault(role => role.Name == "Admin");
+            var roleUser = _roleRepository.GetAll().FirstOrDefault(role => role.Name == "User");
 
             var accountRole = new AccountRole
             {
@@ -173,7 +173,7 @@ public class AuthService
             var claims = new List<Claim>() {
                 new Claim("NIK", employee.Nik),
                 new Claim("FullName", $"{employee.FirstName} {employee.LastName}"),
-                new Claim("EmailAddress", signinDto.Email)
+                new Claim("EmailAddress", employee.Email)
             };
 
             var getAccountRole = _accountRoleRepository.GetAccountRolesByAccountGuid(employee.Guid);
