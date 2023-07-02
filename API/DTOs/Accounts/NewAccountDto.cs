@@ -1,4 +1,5 @@
 ﻿using API.Utilities.Validations;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs.Accounts
@@ -10,10 +11,12 @@ namespace API.DTOs.Accounts
         [PasswordPolicy]
         public string Password { get; set; }
         [Required]
+        [DefaultValue(false)]
         public bool IsDeleted { get; set; }
         [Required]
         public int Otp { get; set; }
         [Required]
+        [DefaultValue(true)]
         public bool IsUsed { get; set; }
         [Required]
         public DateTime ExpiredTime { get; set; }

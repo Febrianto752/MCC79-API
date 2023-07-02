@@ -9,7 +9,7 @@ namespace API.Models
         [Column("guid")]
         public Guid Guid { get; set; }
 
-        [Column("created_at")]
+        [Column("created_date")]
         public DateTime CreatedDate { get; set; }
 
         [Column("modified_date")]

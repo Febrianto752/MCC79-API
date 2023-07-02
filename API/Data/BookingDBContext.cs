@@ -34,6 +34,12 @@ namespace API.Data
                             e.PhoneNumber
                         }).IsUnique();
 
+            modelBuilder.Entity<AccountRole>()
+                        .HasIndex(e => new
+                        {
+                            e.AccountGuid,
+                            e.RoleGuid,
+                        }).IsUnique();
 
             // University - Education (One to Many)
             modelBuilder.Entity<University>()

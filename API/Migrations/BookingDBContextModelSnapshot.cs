@@ -30,7 +30,7 @@ namespace API.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("created_date");
 
                     b.Property<DateTime>("ExpiredTime")
                         .HasColumnType("datetime2")
@@ -75,7 +75,7 @@ namespace API.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("created_date");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2")
@@ -87,9 +87,10 @@ namespace API.Migrations
 
                     b.HasKey("Guid");
 
-                    b.HasIndex("AccountGuid");
-
                     b.HasIndex("RoleGuid");
+
+                    b.HasIndex("AccountGuid", "RoleGuid")
+                        .IsUnique();
 
                     b.ToTable("tb_tr_account_roles");
                 });
@@ -103,7 +104,7 @@ namespace API.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("created_date");
 
                     b.Property<Guid>("EmployeeGuid")
                         .HasColumnType("uniqueidentifier")
@@ -140,7 +141,7 @@ namespace API.Migrations
 
                     b.HasIndex("RoomGuid");
 
-                    b.ToTable("tb_tr_accounts");
+                    b.ToTable("tb_tr_bookings");
                 });
 
             modelBuilder.Entity("API.Models.Education", b =>
@@ -151,7 +152,7 @@ namespace API.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("created_date");
 
                     b.Property<string>("Degree")
                         .IsRequired()
@@ -195,7 +196,7 @@ namespace API.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("created_date");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -250,7 +251,7 @@ namespace API.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("created_date");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2")
@@ -279,7 +280,7 @@ namespace API.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("created_date");
 
                     b.Property<int>("Floor")
                         .HasColumnType("int")
@@ -313,7 +314,7 @@ namespace API.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("created_at");
+                        .HasColumnName("created_date");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2")

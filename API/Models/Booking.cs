@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Models
 {
-    [Table("tb_tr_accounts")]
+    [Table("tb_tr_bookings")]
     public class Booking : BaseEntity
     {
         [Column("start_date")]
