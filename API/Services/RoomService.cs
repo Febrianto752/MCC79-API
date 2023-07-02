@@ -1,5 +1,4 @@
 ﻿using API.Contracts;
-using API.DTOs.Bookings;
 using API.DTOs.Rooms;
 using API.Models;
 using API.Utilities.Enums;
@@ -10,17 +9,19 @@ public class RoomService
 {
     private readonly IRoomRepository _roomRepository;
     private readonly IBookingRepository _bookingRepository;
+    private readonly IEmployeeRepository _employeeRepository;
 
-    public RoomService(IRoomRepository roomRepository, IBookingRepository bookingRepository)
+    public RoomService(IRoomRepository roomRepository, IBookingRepository bookingRepository, IEmployeeRepository employeeRepository)
     {
         _roomRepository = roomRepository;
         _bookingRepository = bookingRepository;
+        _employeeRepository = employeeRepository;
     }
 
     public IEnumerable<GetRoomDto>? GetRoom()
     {
         var rooms = _roomRepository.GetAll();
-        if (!rooms.Any())
+        if (rooms.Count == 0)
         {
             return null; // No room  found
         }
@@ -132,7 +133,7 @@ public class RoomService
         return 1;
     }
 
-    public IEnumerable<UnusedRoomDto> GetUnusedRoom(DateBookingDto dateBookingDto)
+    public IEnumerable<UnusedRoomDto> GetUnusedRoom()
     {
         var rooms = _roomRepository.GetAll().ToList();
 
@@ -140,10 +141,10 @@ public class RoomService
                         join booking in _bookingRepository.GetAll()
                         on room.Guid equals booking.RoomGuid
                         where booking.Status == StatusLevel.OnGoing
-                        select new UnusedRoomDto
+                        select new GetRoomDto
                         {
-                            RoomGuid = room.Guid,
-                            RoomName = room.Name,
+                            Guid = room.Guid,
+                            Name = room.Name,
                             Floor = room.Floor,
                             Capacity = room.Capacity,
                         };
@@ -154,13 +155,12 @@ public class RoomService
         {
             foreach (var usedRoom in usedRooms)
             {
-                if (room.Guid == usedRoom.RoomGuid)
+                if (room.Guid == usedRoom.Guid)
                 {
                     tmpRooms.Remove(room);
                     break;
                 }
             }
-
         }
 
         var unusedRooms = from room in tmpRooms
@@ -173,6 +173,38 @@ public class RoomService
                           };
 
         return unusedRooms;
+    }
+
+    public IEnumerable<UsedRoomDto>? GetUsedRooms()
+    {
+        var bookings = _bookingRepository.GetAll();
+
+        if (bookings is null)
+        {
+            return null;
+        }
+
+        var usedRooms = (from booking in bookings
+                         join employee in _employeeRepository.GetAll()
+                         on booking.EmployeeGuid equals employee.Guid
+                         join room in _roomRepository.GetAll()
+                         on booking.RoomGuid equals room.Guid
+                         where booking.Status == StatusLevel.OnGoing
+                         select new UsedRoomDto
+                         {
+                             BookingGuid = booking.Guid,
+                             RoomName = room.Name,
+                             Status = booking.Status,
+                             Floor = room.Floor,
+                             BookedBy = employee.FirstName + " " + employee.LastName,
+                         });
+
+        if (usedRooms.Count() == 0)
+        {
+            return null;
+        }
+
+        return usedRooms;
     }
 }
 
