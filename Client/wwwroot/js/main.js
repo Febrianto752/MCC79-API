@@ -31,3 +31,11 @@ btnChangeToNormal.addEventListener("click", () => {
         elem.classList.add("text-dark");
     });
 });
+
+
+
+
+
+
+
+
