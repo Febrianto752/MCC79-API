@@ -1,9 +1,9 @@
 const POKEMON_API_URL = "https://pokeapi.co/api/v2/pokemon";
 $.ajax({
     url: POKEMON_API_URL,
-}).done((result) => {
+}).done((data) => {
     let pokemonRow = "";
-    $.each(result.results, (key, val) => {
+    $.each(data.results, (key, val) => {
         pokemonRow += `<tr>
                   <td>${key + 1}</td>
                   <td>${val.name}</td>
