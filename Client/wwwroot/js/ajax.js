@@ -48,6 +48,12 @@ $(document).ready(function () {
                 //}
             },
             {
+                data: "gender",
+                render: (data, type, row) => {
+                    return (data === 0) ? "Female" : "Male";
+                }
+            },
+            {
                 data: "email"
             },
             {
@@ -58,7 +64,49 @@ $(document).ready(function () {
                 render: (data, type, row) => {
                     return moment(data).format("dddd, DD-MM-YYYY");
                 }
+            },
+            {
+                data: "detail",
+                render: (data, type, row) => {
+                    return `<button class="btn btn-info">Detail</button>`
+                }
             }
+        ],
+        dom: 'Bfrtip',
+        buttons: [
+            'colvis',
+            {
+                extend: 'excelHtml5',
+                title: 'Excel',
+                text: 'Export to excel'
+                //Columns to export
+                //exportOptions: {
+                //     columns: [0, 1, 2, 3,4,5,6]
+                // }
+            },
+            {
+                extend: 'pdfHtml5',
+                title: 'PDF',
+                text: 'Export to PDF',
+                //Columns to export
+                //exportOptions: {
+                //     columns: [0, 1, 2, 3, 4, 5, 6]
+                //  }
+            },
+            {
+                extend: 'copyHtml5',
+                title: 'Copy table',
+                text: 'Copy'
+                //Columns to export
+                //exportOptions: {
+                //     columns: [0, 1, 2, 3, 4, 5, 6]
+                //  }
+            },
+            {
+                extend: 'csvHtml5',
+                title: 'Table Employee',
+                text: "Export to CSV"                
+            },
         ]
     });
 
