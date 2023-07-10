@@ -2,7 +2,7 @@
 
 namespace Client.Controllers
 {
-    public class PokemonController : Controller
+    public class EmployeeController : Controller
     {
         public IActionResult Index()
         {

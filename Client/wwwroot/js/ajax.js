@@ -1,4 +1,5 @@
 const POKEMON_API_URL = "https://pokeapi.co/api/v2/pokemon";
+const EMPLOYEE_API_URL = "https://localhost:7103/api/v1/employees";
 //$.ajax({
 //    url: POKEMON_API_URL,
 //}).done((data) => {
@@ -20,9 +21,9 @@ $(document).ready(function () {
     $('#pokemon-table').DataTable({
         
         ajax: {
-            url: POKEMON_API_URL,
+            url: EMPLOYEE_API_URL,
             dataType: "JSON",
-            dataSrc: "results" //data source -> butuh array of object
+            dataSrc: "data" //data source -> butuh array of object
         },
         columns: [
             {
@@ -31,16 +32,33 @@ $(document).ready(function () {
                     return meta.row + 1;
                 }
             },
-            { data: "name" },
             {
-                data: 'url',
-                render: function (data, type, row) {
-                    console.log("data : ", data);
-                    console.log("type : ", type);
-                    console.log("row : ", row);
-                    return `<button onclick="detail('${data}')" data-bs-toggle="modal" data-bs-target="#modal-pokemon" class="btn btn-primary">Detail</button>`;
-                }
+                data: "nik"
             },
+            {
+                data: 'fullname',
+                render: (data, type, row) => {
+                    return `${row.firstName} ${row.lastName}`;
+                }
+                //render: function (data, type, row) {
+                //    console.log("data : ", data);
+                //    console.log("type : ", type);
+                //    console.log("row : ", row);
+                //    return `<button onclick="detail('${data}')" data-bs-toggle="modal" data-bs-target="#modal-pokemon" class="btn btn-primary">Detail</button>`;
+                //}
+            },
+            {
+                data: "email"
+            },
+            {
+                data: "phoneNumber"
+            },
+            {
+                data: "birthDate",
+                render: (data, type, row) => {
+                    return moment(data).format("dddd, DD-MM-YYYY");
+                }
+            }
         ]
     });
 
@@ -49,121 +67,121 @@ $(document).ready(function () {
     
 });
 
-function detail(stringURL) {
-    loadingImgAnimation();
-    loadingDescriptionAnimation();
+//function detail(stringURL) {
+//    loadingImgAnimation();
+//    loadingDescriptionAnimation();
 
-    $("#nav-description-tab").trigger("click");
-    $.ajax({
-        url: stringURL,
-    }).done((res) => {
-        $(".modal-title").html(res.name.toUpperCase());
+//    $("#nav-description-tab").trigger("click");
+//    $.ajax({
+//        url: stringURL,
+//    }).done((res) => {
+//        $(".modal-title").html(res.name.toUpperCase());
 
-        $("#pokemon-image").attr(
-            "src",
-            res.sprites.other["official-artwork"]["front_default"]
-        );
+//        $("#pokemon-image").attr(
+//            "src",
+//            res.sprites.other["official-artwork"]["front_default"]
+//        );
 
-        let pokemonTypes = "";
+//        let pokemonTypes = "";
 
-        res.types.forEach((type) => {
-            pokemonTypes += `
-      <span class="badge rounded-pill bg-dark">${type.type.name}</span>
-      `;
-        });
+//        res.types.forEach((type) => {
+//            pokemonTypes += `
+//      <span class="badge rounded-pill bg-dark">${type.type.name}</span>
+//      `;
+//        });
 
-        $("#pokemon-type").html(pokemonTypes);
+//        $("#pokemon-type").html(pokemonTypes);
 
-        setDescriptionPokemon(res.species.url);
-        $("#height-description").html(`<b>Height</b> : ${res.height} decimetres`);
-        $("#weight-description").html(`<b>Weight</b> : ${res.weight} hectograms`);
+//        setDescriptionPokemon(res.species.url);
+//        $("#height-description").html(`<b>Height</b> : ${res.height} decimetres`);
+//        $("#weight-description").html(`<b>Weight</b> : ${res.weight} hectograms`);
 
-        // set abilities tab
-        let abilitieElems = "";
+//        // set abilities tab
+//        let abilitieElems = "";
 
-        res.abilities.forEach((ability) => {
-            abilitieElems += `<li>${ability.ability.name}</li>`;
-        });
+//        res.abilities.forEach((ability) => {
+//            abilitieElems += `<li>${ability.ability.name}</li>`;
+//        });
 
-        $("#ability-list").html(abilitieElems);
+//        $("#ability-list").html(abilitieElems);
 
-        // set stats tab
-        $("#progress-hp").attr("style", `width: ${res.stats[0].base_stat}%`);
-        $("#progress-hp").html(`HP : ${res.stats[0].base_stat}`);
+//        // set stats tab
+//        $("#progress-hp").attr("style", `width: ${res.stats[0].base_stat}%`);
+//        $("#progress-hp").html(`HP : ${res.stats[0].base_stat}`);
 
-        $("#progress-attack").attr("style", `width: ${res.stats[1].base_stat}%`);
-        $("#progress-attack").html(`ATTACK : ${res.stats[1].base_stat}`);
+//        $("#progress-attack").attr("style", `width: ${res.stats[1].base_stat}%`);
+//        $("#progress-attack").html(`ATTACK : ${res.stats[1].base_stat}`);
 
-        $("#progress-defense").attr("style", `width: ${res.stats[2].base_stat}%`);
-        $("#progress-defense").html(`DEFENSE : ${res.stats[2].base_stat}`);
+//        $("#progress-defense").attr("style", `width: ${res.stats[2].base_stat}%`);
+//        $("#progress-defense").html(`DEFENSE : ${res.stats[2].base_stat}`);
 
-        $("#progress-speed").attr("style", `width: ${res.stats[3].base_stat}%`);
-        $("#progress-speed").html(`SPEED : ${res.stats[3].base_stat}`);
+//        $("#progress-speed").attr("style", `width: ${res.stats[3].base_stat}%`);
+//        $("#progress-speed").html(`SPEED : ${res.stats[3].base_stat}`);
 
-        //removeLoadingAnimation();
-    });
-}
+//        //removeLoadingAnimation();
+//    });
+//}
 
-$("#pokemon-image").on("load", function () {
-    console.log("Hello World");
-    removeLoadingImgAnimation();
-});
+//$("#pokemon-image").on("load", function () {
+//    console.log("Hello World");
+//    removeLoadingImgAnimation();
+//});
 
-function setDescriptionPokemon(stringUrl) {
-    $.ajax({
-        url: stringUrl,
-    }).done((res) => {
-        let pokemonDescription = "";
+//function setDescriptionPokemon(stringUrl) {
+//    $.ajax({
+//        url: stringUrl,
+//    }).done((res) => {
+//        let pokemonDescription = "";
 
-        let flavorTextEntriesEN = res.flavor_text_entries.filter(
-            (entrie) => entrie.language.name == "en"
-        );
+//        let flavorTextEntriesEN = res.flavor_text_entries.filter(
+//            (entrie) => entrie.language.name == "en"
+//        );
 
-        let uniqueFlavorTexts = Array.from(
-            new Set(
-                flavorTextEntriesEN.map((item) =>
-                    item.flavor_text
-                        .replace("\f", " ")
-                        .replace(/(\r\n|\n|\r)/gm, " ")
-                        .toLowerCase()
-                )
-            )
-        );
+//        let uniqueFlavorTexts = Array.from(
+//            new Set(
+//                flavorTextEntriesEN.map((item) =>
+//                    item.flavor_text
+//                        .replace("\f", " ")
+//                        .replace(/(\r\n|\n|\r)/gm, " ")
+//                        .toLowerCase()
+//                )
+//            )
+//        );
 
-        uniqueFlavorTexts.forEach((flavor_text) => {
-            pokemonDescription += `
-        <p>
-          ${flavor_text}
-        </p>
-      `;
-        });
+//        uniqueFlavorTexts.forEach((flavor_text) => {
+//            pokemonDescription += `
+//        <p>
+//          ${flavor_text}
+//        </p>
+//      `;
+//        });
 
-        $(".p-description").html(pokemonDescription);
-        removeLoadingDescriptionAnimation();
-    });
-}
+//        $(".p-description").html(pokemonDescription);
+//        removeLoadingDescriptionAnimation();
+//    });
+//}
 
-const loadingElem = `
-<div class="loading position-absolute bg-white h-100 d-flex justify-content-center align-items-center" style="top:0; width: 95%">
-  <div class="spinner-border " role="status">
-    <span class="visually-hidden">Loading...</span>
-  </div>
-</div>
+//const loadingElem = `
+//<div class="loading position-absolute bg-white h-100 d-flex justify-content-center align-items-center" style="top:0; width: 95%">
+//  <div class="spinner-border " role="status">
+//    <span class="visually-hidden">Loading...</span>
+//  </div>
+//</div>
 
-`;
+//`;
 
-function loadingImgAnimation() {
-    $("#left-side-modal-pokemon").append(loadingElem);
-}
+//function loadingImgAnimation() {
+//    $("#left-side-modal-pokemon").append(loadingElem);
+//}
 
-function loadingDescriptionAnimation() {
-     $("#right-side-modal-pokemon").append(loadingElem);
-}
+//function loadingDescriptionAnimation() {
+//     $("#right-side-modal-pokemon").append(loadingElem);
+//}
 
-function removeLoadingImgAnimation() {
-    $("#left-side-modal-pokemon .loading").remove();
-}
+//function removeLoadingImgAnimation() {
+//    $("#left-side-modal-pokemon .loading").remove();
+//}
 
-function removeLoadingDescriptionAnimation() {
-    $("#right-side-modal-pokemon .loading").remove();
-}
+//function removeLoadingDescriptionAnimation() {
+//    $("#right-side-modal-pokemon .loading").remove();
+//}
