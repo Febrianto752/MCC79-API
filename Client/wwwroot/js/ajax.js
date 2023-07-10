@@ -1,17 +1,52 @@
 const POKEMON_API_URL = "https://pokeapi.co/api/v2/pokemon";
-$.ajax({
-    url: POKEMON_API_URL,
-}).done((data) => {
-    let pokemonRow = "";
-    $.each(data.results, (key, val) => {
-        pokemonRow += `<tr>
-                  <td>${key + 1}</td>
-                  <td>${val.name}</td>
-                  <td><button onclick="detail('${val.url
-            }')" data-bs-toggle="modal" data-bs-target="#modal-pokemon" class="btn btn-primary">Detail</button></td>
-              </tr>`;
+//$.ajax({
+//    url: POKEMON_API_URL,
+//}).done((data) => {
+//    let pokemonRow = "";
+//    $.each(data.results, (key, val) => {
+//        pokemonRow += `<tr>
+//                  <td>${key + 1}</td>
+//                  <td>${val.name}</td>
+//                  <td><button onclick="detail('${val.url
+//            }')" data-bs-toggle="modal" data-bs-target="#modal-pokemon" class="btn btn-primary">Detail</button></td>
+//              </tr>`;
+//    });
+//    $("#tbody").html(pokemonRow);
+//});
+
+
+
+$(document).ready(function () {
+    $('#pokemon-table').DataTable({
+        
+        ajax: {
+            url: POKEMON_API_URL,
+            dataType: "JSON",
+            dataSrc: "results" //data source -> butuh array of object
+        },
+        columns: [
+            {
+                data: "no",
+                render: function (data, type, row, meta) {
+                    return meta.row + 1;
+                }
+            },
+            { data: "name" },
+            {
+                data: 'url',
+                render: function (data, type, row) {
+                    console.log("data : ", data);
+                    console.log("type : ", type);
+                    console.log("row : ", row);
+                    return `<button onclick="detail('${data}')" data-bs-toggle="modal" data-bs-target="#modal-pokemon" class="btn btn-primary">Detail</button>`;
+                }
+            },
+        ]
     });
-    $("#tbody").html(pokemonRow);
+
+    
+
+    
 });
 
 function detail(stringURL) {
