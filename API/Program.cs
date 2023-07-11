@@ -66,6 +66,7 @@ builder.Services.AddScoped<AuthService>();
 
 // add handler to the container
 builder.Services.AddScoped<GenerateHandler>();
+builder.Services.AddScoped<Seeder>();
 builder.Services.AddScoped<ITokenHandler, Handlers.TokenHandler>();
 
 // Jwt Configuration

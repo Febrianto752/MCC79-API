@@ -1,13 +1,15 @@
 ﻿using API.Models;
+using API.Utilities.Handlers;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
 {
     public class BookingDbContext : DbContext
     {
-        public BookingDbContext(DbContextOptions<BookingDbContext> options) : base(options)
+        private readonly Seeder _seeder;
+        public BookingDbContext(DbContextOptions<BookingDbContext> options, Seeder seeder) : base(options)
         {
-
+            _seeder = seeder;
         }
 
         // Table
@@ -82,6 +84,9 @@ namespace API.Data
                 .HasMany(role => role.AccountRole)
                 .WithOne(accountRole => accountRole.Role)
                 .HasForeignKey(accountRole => accountRole.RoleGuid);
+
+            var employees = _seeder.GenerateEmployees().Generate(10);
+            modelBuilder.Entity<Employee>().HasData(employees);
         }
     }
 }
