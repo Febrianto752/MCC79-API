@@ -28,14 +28,10 @@
         background: #007D45;
         color: white;
     }
-
-
-    
-
 </style>
 
 <h1 class="text-center my-5">List of Employee</h1>
-<div id="flashMessage"></div>
+
 <!-- button create employee -->
 <button type="button"
         class="btn btn-success mb-4"
@@ -60,204 +56,6 @@
     </thead>
     <tbody id="tbody"></tbody>
 </table>
-
-<!-- modal pokemon  -->
-<div
-    class="modal fade"
-    id="modal-pokemon"
-    tabindex="-1"
-    aria-labelledby="exampleModalLabel"
-    aria-hidden="true"
->
-    <div class="modal-dialog modal-xl">
-    <div class="modal-content">
-        <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
-        <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-        ></button>
-        </div>
-        <div class="modal-body">
-        <div class="row">
-            <!-- left side modal pokemon  -->
-            <div
-            class="col-lg-5 text-center position-relative"
-            id="left-side-modal-pokemon"
-            style="min-height: 340px"
-            >
-            <img alt="pokemon" style="width: 100%" id="pokemon-image" />
-            <div class="mb-5 mb-lg-2" id="pokemon-type"></div>
-            </div>
-
-            <!-- right side modal  -->
-            <div
-            class="col-lg-7 position-relative"
-            id="right-side-modal-pokemon"
-            >
-            <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <button
-                    class="nav-link active"
-                    id="nav-description-tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#nav-description"
-                    type="button"
-                    role="tab"
-                    aria-controls="nav-description"
-                    aria-selected="true"
-                >
-                    Description
-                </button>
-                <button
-                    class="nav-link"
-                    id="nav-abilities-tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#nav-abilities"
-                    type="button"
-                    role="tab"
-                    aria-controls="nav-abilities"
-                    aria-selected="false"
-                >
-                    Abilities
-                </button>
-                <button
-                    class="nav-link"
-                    id="nav-stats-tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#nav-stats"
-                    type="button"
-                    role="tab"
-                    aria-controls="nav-stats"
-                    aria-selected="false"
-                >
-                    Stats
-                </button>
-                </div>
-            </nav>
-
-            <div
-                class="tab-content bg-light p-3 overflow-auto"
-                id="nav-tabContent"
-                style="height: 340px"
-            >
-                <div
-                class="tab-pane fade show active"
-                id="nav-description"
-                role="tabpanel"
-                aria-labelledby="nav-description-tab"
-                tabindex="0"
-                >
-                <div class="p-description mb-4"></div>
-
-                <p id="height-description"></p>
-                <p id="weight-description"></p>
-                </div>
-                <div
-                class="tab-pane fade"
-                id="nav-abilities"
-                role="tabpanel"
-                aria-labelledby="nav-abilities-tab"
-                tabindex="0"
-                >
-                <ul id="ability-list"></ul>
-                </div>
-                <div
-                class="tab-pane fade"
-                id="nav-stats"
-                role="tabpanel"
-                aria-labelledby="nav-stats-tab"
-                tabindex="0"
-                >
-                <div
-                    class="progress mb-3"
-                    role="progressbar"
-                    aria-label="Success example"
-                    aria-valuenow="25"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 26px"
-                >
-                    <div
-                    class="progress-bar bg-success"
-                    style="width: 25%"
-                    id="progress-hp"
-                    >
-                    HP : 25%
-                    </div>
-                </div>
-                <div
-                    class="progress mb-3"
-                    role="progressbar"
-                    aria-label="Info example"
-                    aria-valuenow="50"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 26px"
-                >
-                    <div
-                    class="progress-bar bg-info text-dark"
-                    style="width: 50%"
-                    id="progress-attack"
-                    >
-                    ATTACK : 50%
-                    </div>
-                </div>
-                <div
-                    class="progress mb-3"
-                    role="progressbar"
-                    aria-label="Warning example"
-                    aria-valuenow="75"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 26px"
-                >
-                    <div
-                    class="progress-bar bg-warning text-dark"
-                    style="width: 75%"
-                    id="progress-defense"
-                    >
-                    DEFENSE : 75%
-                    </div>
-                </div>
-                <div
-                    class="progress mb-3"
-                    role="progressbar"
-                    aria-label="Danger example"
-                    aria-label="Example 20px high"
-                    aria-valuenow="100"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="height: 26px"
-                >
-                    <div
-                    class="progress-bar bg-danger"
-                    style="width: 100%"
-                    id="progress-speed"
-                    >
-                    SPEED : 100%
-                    </div>
-                </div>
-                </div>
-            </div>
-            </div>
-        </div>
-        </div>
-        <div class="modal-footer">
-        <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-        >
-            Close
-        </button>
-        </div>
-    </div>
-    </div>
-</div>
-
 
 <!-- Modal create employee -->
 <div class="modal fade"
@@ -357,5 +155,6 @@
         </div>
     </div>
 </div>
+<!-- akhir modal create employee -->
 
 <script src="~/js/ajax.js" asp-append-version="true"></script>
