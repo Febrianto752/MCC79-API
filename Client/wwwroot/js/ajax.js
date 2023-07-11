@@ -18,7 +18,7 @@ const EMPLOYEE_API_URL = "https://localhost:7103/api/v1/employees";
 
 
 $(document).ready(function () {
-    $('#pokemon-table').DataTable({
+    let table = $('#employee-table').DataTable({
         
         ajax: {
             url: EMPLOYEE_API_URL,
@@ -94,6 +94,11 @@ $(document).ready(function () {
                 //  }
             },
             {
+                extend: 'csvHtml5',
+                title: 'Table Employee',
+                text: "Export to CSV"
+            },
+            {
                 extend: 'copyHtml5',
                 title: 'Copy table',
                 text: 'Copy'
@@ -102,18 +107,100 @@ $(document).ready(function () {
                 //     columns: [0, 1, 2, 3, 4, 5, 6]
                 //  }
             },
-            {
-                extend: 'csvHtml5',
-                title: 'Table Employee',
-                text: "Export to CSV"                
-            },
+            
         ]
     });
 
-    
+    $("#btnCreateEmployee").on("click", () => {
+        Insert();
+        
+    });
 
     
 });
+
+function Insert() {
+    const employee = {
+        firstName: $("#firstName").val(),
+        lastName: $("#lastName").val(),
+        birthDate: $("#birthDate").val(),
+        gender: parseInt($('input[name="gender"]:checked').val()),
+        hiringDate: $("#hiringDate").val(),
+        email: $("#email").val(),
+        phoneNumber: $("#phoneNumber").val(),
+    };
+    console.log("employee : ", employee);
+
+    //isi dari object kalian buat sesuai dengan bentuk object yang akan di post
+    $.ajax({
+        url: EMPLOYEE_API_URL,
+        type: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        data: JSON.stringify(employee), //jika terkena 415 unsupported media type (tambahkan headertype Json & JSON.Stringify();)
+    })
+        .done((result) => {
+            console.log("result : ", result);
+            //buat alert pemberitahuan jika success
+            const successMessageElem = `
+      <div
+          class="alert alert-success alert-dismissible fade alertMessage"
+          role="alert"
+      >
+        <div class="text-center">
+          ${result.message}       
+        </div>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>      
+      `;
+
+            $("#flashMessage").html(successMessageElem);
+            $(".alertMessage").addClass("show");
+            $('#employee-table').DataTable().ajax.reload();
+        })
+        .fail((error) => {
+            console.log("Error : ", error);
+            const errorMessages = error.responseJSON.errors;
+
+            const listErrorElem = `
+      <div
+          class="alert alert-danger alert-dismissible fade alertMessage"
+          role="alert"
+      >
+        <strong>Errors Message : </strong>
+        <ul>
+        ${errorMessages.map((errorMessage) => `<li>${errorMessage}</li>`)}
+        </ul>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>      
+      `;
+
+            $("#flashMessage").html(listErrorElem);
+            $(".alertMessage").addClass("show");
+        })
+        .always(() => {
+            $("#firstName").val("");
+            $("#lastName").val("");
+            $("#birthDate").val("2000-01-02");
+            $("input[name='gender'][value='female']").prop("checked", true);
+            $("#hiringDate").val("2022-01-02");
+            $("#email").val("");
+            $("#phoneNumber").val(0);
+        });
+}
 
 //function detail(stringURL) {
 //    loadingImgAnimation();
