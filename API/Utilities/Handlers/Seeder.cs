@@ -12,7 +12,7 @@ public class Seeder
         //var employees = new List<Employee>();
 
         var employeesFaker = new Faker<Employee>()
-                            //.RuleFor(u => u.Guid, _ => new Guid())
+                            .RuleFor(u => u.Guid, _ => Guid.NewGuid())
                             .RuleFor(u => u.FirstName, faker => faker.Name.FirstName())
                             .RuleFor(u => u.LastName, faker => faker.Name.LastName())
                             .RuleFor(u => u.BirthDate, faker => faker.Person.DateOfBirth)
@@ -20,9 +20,9 @@ public class Seeder
                             .RuleFor(u => u.Nik, faker => faker.Person.Cpr())
                             .RuleFor(u => u.Email, faker => faker.Person.Email)
                             .RuleFor(u => u.Gender, faker => faker.PickRandom<GenderEnum>())
-                            .RuleFor(u => u.PhoneNumber, faker => faker.Person.Phone);
-        //.RuleFor(u => u.CreatedDate, _ => DateTime.Now)
-        //.RuleFor(u => u.ModifiedDate, _ => DateTime.Now);
+                            .RuleFor(u => u.PhoneNumber, faker => faker.Person.Phone)
+                            .RuleFor(u => u.CreatedDate, _ => DateTime.Now)
+                            .RuleFor(u => u.ModifiedDate, _ => DateTime.Now);
 
         //var employeeSeeds = employeesFaker.Generate(10);
 

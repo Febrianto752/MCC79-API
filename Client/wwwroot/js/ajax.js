@@ -15,8 +15,6 @@ const EMPLOYEE_API_URL = "https://localhost:7103/api/v1/employees";
 //    $("#tbody").html(pokemonRow);
 //});
 
-
-
 $(document).ready(function () {
     let table = $('#employee-table').DataTable({
         
