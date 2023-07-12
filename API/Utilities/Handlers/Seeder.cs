@@ -1,12 +1,12 @@
 ﻿using API.Models;
 using API.Utilities.Enums;
 using Bogus;
-using Bogus.Extensions.Denmark;
 
 namespace API.Utilities.Handlers;
 
 public class Seeder
 {
+
     public Faker<Employee> GenerateEmployees()
     {
         //var employees = new List<Employee>();
@@ -17,10 +17,10 @@ public class Seeder
                             .RuleFor(u => u.LastName, faker => faker.Name.LastName())
                             .RuleFor(u => u.BirthDate, faker => faker.Person.DateOfBirth)
                             .RuleFor(u => u.HiringDate, (faker, u) => faker.Date.Between(u.BirthDate.AddYears(10), DateTime.Now))
-                            .RuleFor(u => u.Nik, faker => faker.Person.Cpr())
+                            .RuleFor(u => u.Nik, faker => faker.Random.Number(1, 10000).ToString())
                             .RuleFor(u => u.Email, faker => faker.Person.Email)
                             .RuleFor(u => u.Gender, faker => faker.PickRandom<GenderEnum>())
-                            .RuleFor(u => u.PhoneNumber, faker => faker.Person.Phone)
+                            .RuleFor(u => u.PhoneNumber, faker => faker.Phone.PhoneNumber("+628##-####-####"))
                             .RuleFor(u => u.CreatedDate, _ => DateTime.Now)
                             .RuleFor(u => u.ModifiedDate, _ => DateTime.Now);
 
