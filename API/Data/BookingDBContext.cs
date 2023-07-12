@@ -85,9 +85,9 @@ namespace API.Data
                 .WithOne(accountRole => accountRole.Role)
                 .HasForeignKey(accountRole => accountRole.RoleGuid);
 
-            var employees = _seeder.GenerateEmployees().Generate(10);
+            //var employees = _seeder.GenerateEmployees().Generate(10);
 
-            modelBuilder.Entity<Employee>().HasData(employees);
+            //modelBuilder.Entity<Employee>().HasData(employees);
         }
     }
 }
