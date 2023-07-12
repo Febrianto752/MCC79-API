@@ -52,29 +52,7 @@ $(document).ready(function () {
         dom: 'Bfrtip',
         buttons: [
             'colvis',
-            {
-                extend: 'excelHtml5',
-                title: 'Excel',
-                text: 'Export to excel'
-                //Columns to export
-                //exportOptions: {
-                //     columns: [0, 1, 2, 3,4,5,6]
-                // }
-            },
-            {
-                extend: 'pdfHtml5',
-                title: 'PDF',
-                text: 'Export to PDF',
-                //Columns to export
-                //exportOptions: {
-                //     columns: [0, 1, 2, 3, 4, 5, 6]
-                //  }
-            },
-            {
-                extend: 'csvHtml5',
-                title: 'Table Employee',
-                text: "Export to CSV"
-            },
+            
             {
                 extend: 'copyHtml5',
                 title: 'Copy table',
@@ -84,6 +62,34 @@ $(document).ready(function () {
                 //     columns: [0, 1, 2, 3, 4, 5, 6]
                 //  }
             },
+            {
+                extend: 'collection',
+                text: 'Export',
+                buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Excel',
+                    text: 'Export to excel'
+                    //Columns to export
+                    //exportOptions: {
+                    //     columns: [0, 1, 2, 3,4,5,6]
+                    // }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'PDF',
+                    text: 'Export to PDF',
+                    //Columns to export
+                    //exportOptions: {
+                    //     columns: [0, 1, 2, 3, 4, 5, 6]
+                    //  }
+                },
+                {
+                    extend: 'csvHtml5',
+                    title: 'Table Employee',
+                    text: "Export to CSV"
+                }]
+            }
             
         ]
     });
