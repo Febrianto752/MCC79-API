@@ -43,9 +43,12 @@ $(document).ready(function () {
                 }
             },
             {
-                data: "delete",
+                data: "action",
                 render: (data, type, row) => {
-                    return `<button class="btn btn-danger" onclick="Delete('${row.guid}')">Delete</button>`
+                    return `
+                    <button class="btn btn-danger mb-2" onclick="Delete('${row.guid}')">Delete</button>
+                    <button class="btn btn-warning" onclick="Edit('${row.guid}')">Edit</button>
+                    `
                 }
             }
         ],
@@ -97,7 +100,22 @@ $(document).ready(function () {
     $("#btnCreateEmployee").on("click", () => {
         Insert();       
     }); 
+
+    
 });
+
+function SetCreateModal() {
+    $("#firstName").val("")
+    $("#lastName").val("")
+    $("#birthDate").val("2000-01-14")
+    $(`#female`).prop("checked", true);
+    $("#hiringDate").val("2022-01-14")
+    $("#email").val("")
+    $("#phoneNumber").val(0)
+
+    $("#btnUpdateEmployee").remove();
+    $("#btnCreateEmployee").show();        
+}
 
 function Insert() {
     const employee = {
@@ -189,3 +207,114 @@ function Delete(guid) {
     
 }
 
+
+
+function Edit(guid) {
+    console.log("Hello World");
+
+    $.ajax({
+        url: EMPLOYEE_API_URL + `/${guid}`,
+        type: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+        .done((result) => {
+            const employee = result.data;
+
+            if ($("#nik").length == 0) {
+                const inputNikElem = `
+            <div class="mb-3">
+                <label for="nik" class="form-label">NIK</label>
+                <input type="text"
+                        class="form-control"
+                        id="nik"
+                        value="${employee.nik}"
+                        readonly
+                        />
+            </div>
+            `;
+
+                $("#employeeModal .modal-body").prepend(inputNikElem)
+            }
+            
+            $("#nik").val(employee.nik)
+            $("#firstName").val(employee.firstName)
+            $("#lastName").val(employee.lastName)
+            $("#birthDate").val(moment(employee.birthDate).format("yyyy-MM-DD"))
+            $(`input[name='gender'][value='${employee.gender}']`).prop("checked", true);
+            $("#hiringDate").val(moment(employee.hiringDate).format("yyyy-MM-DD"))
+            $("#email").val(employee.email)
+            $("#phoneNumber").val(employee.phoneNumber)
+
+            $("#btnUpdateEmployee").remove();
+
+            const btnUpdateElem = `
+            <button type="button"
+                            class="btn btn-primary"
+                            id="btnUpdateEmployee"
+                            data-bs-dismiss="modal"
+                            onclick="Update('${employee.guid}')"
+                            >
+                        Update
+                    </button>
+        `;
+
+            $(".btnWrapper").append(btnUpdateElem);
+            $("#btnCreateEmployee").hide();
+                                              
+            $("#employeeModal").modal("show")
+            
+        })
+        .fail((error) => {
+
+            Swal.fire({
+                title: error.responseJSON.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            })
+        })
+}
+
+
+function Update(guid) {
+    const employee = {
+        guid,
+        nik: $("#nik").val(),
+        firstName: $("#firstName").val(),
+        lastName: $("#lastName").val(),
+        birthDate: $("#birthDate").val(),
+        gender: parseInt($('input[name="gender"]:checked').val()),
+        hiringDate: $("#hiringDate").val(),
+        email: $("#email").val(),
+        phoneNumber: $("#phoneNumber").val(),
+    };
+
+    $.ajax({
+        url: EMPLOYEE_API_URL,
+        type: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        data: JSON.stringify(employee),
+    })
+        .done((result) => {
+            //buat alert pemberitahuan jika success
+            Swal.fire({
+                title: result.message,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+
+            // reload table 
+            $('#employee-table').DataTable().ajax.reload();
+        })
+        .fail((error) => {
+
+            Swal.fire({
+                title: error.responseJSON.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            })
+        });
+}

@@ -20,7 +20,7 @@ public class EmployeeRepository : GeneralRepository<Employee>, IEmployeeReposito
 
     public string? GetLastEmpoyeeNik()
     {
-        return _context.Set<Employee>().ToList().Select(e => e.Nik).LastOrDefault();
+        return _context.Set<Employee>().ToList().OrderBy(e => e.Nik).Select(e => e.Nik).LastOrDefault();
     }
 }
 
