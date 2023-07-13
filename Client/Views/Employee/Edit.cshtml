@@ -1,0 +1,96 @@
+﻿@model API.DTOs.Employees.GetEmployeeDto
+@using API.Utilities.Enums
+
+@{
+    ViewData["Title"] = "Edit Employee";
+    Console.WriteLine(Model.BirthDate.ToString("yyyy-MM-dd"));
+}
+
+<h1>Edit Employee</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form action="/Employee/Edit" method="POST">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-group mb-3" hidden>
+                <label asp-for="Guid" class="control-label"></label>
+                <input asp-for="Guid" class="form-control" value="@(Model.Guid)" />
+                <span asp-validation-for="Guid" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3" hidden>
+                <label asp-for="Nik" class="control-label"></label>
+                <input asp-for="Nik" class="form-control" value="@(Model.Nik)" />
+                <span asp-validation-for="Nik" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" value="@(Model.FirstName)" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" value="@(Model.LastName)" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="BirthDate" class="control-label"></label>
+                <input asp-for="BirthDate" type="date" class="form-control" value="@(Model.BirthDate.ToString("yyyy-MM-dd"))" />
+                <span asp-validation-for="BirthDate" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <div>Gender</div>
+                <div class="form-check">
+                    <input asp-for="Gender"
+                           class="form-check-input"
+                           type="radio"
+                           name="gender"
+                           id="female"
+                           value="0"
+                           checked=@(Model.Gender == GenderEnum.Female ? true : false ) />
+                    <label asp-for="Gender" for="female"> Female </label>
+                </div>
+                <div class="form-check">
+                    <input asp-for="Gender"
+                           class="form-check-input"
+                           type="radio"
+                           name="gender"
+                           id="male"
+                           value="1"
+                           checked=@(Model.Gender == GenderEnum.Male ? true : false ) />
+                    <label asp-for="Gender" for="male"> Male </label>
+                </div>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="HiringDate" class="control-label"></label>
+                <input asp-for="HiringDate" type="date" class="form-control" value="@(Model.HiringDate.ToString("yyyy-MM-dd"))" />
+                <span asp-validation-for="HiringDate" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" value="@(Model.Email)" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" value="@(Model.PhoneNumber)" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,26 @@
+﻿@model API.DTOs.Employees.GetEmployeeDto
+
+@{
+    ViewData["Title"] = "Detail Employee";
+}
+
+
+<div class="card my-3">
+    <div class="card-header">
+        Detail Employee
+    </div>
+    <div class="card-body">
+        <p><strong>First Name</strong>   : @Model.FirstName</p>
+        <p><strong>Last Name</strong>    : @Model.LastName</p>
+        <p><strong>NIK</strong>          : @Model.Nik</p>
+        <p><strong>Gender</strong>       : @(Model.Gender == 0 ? "Female" : "Male")</p>
+        <p><strong>Birth Date</strong>   : @Model.BirthDate.ToString("dd-MM-yyyy")</p>
+        <p><strong>First Name</strong>   : @Model.HiringDate.ToString("dd-MM-yyyy")</p>
+        <p><strong>Phone Number</strong> : @Model.PhoneNumber</p>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
