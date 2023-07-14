@@ -94,7 +94,6 @@ namespace Client.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePOST(Guid guid)
         {
             Console.WriteLine("guid : " + guid);
@@ -107,7 +106,7 @@ namespace Client.Controllers
             else if (result.Code == 404 || result.Code == 500)
             {
 
-                TempData["Success"] = result.Message;
+                TempData["Error"] = result.Message;
                 return RedirectToAction(nameof(Index));
             }
 

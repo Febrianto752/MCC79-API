@@ -32,8 +32,9 @@ namespace API.Utilities.Validations
             var employeeRepository = (IEmployeeRepository)validationContext.GetService(typeof(IEmployeeRepository))!;
             var guidProperty = validationContext.ObjectType.GetProperty(_guidPropertyName);
             var guidValue = guidProperty?.GetValue(validationContext.ObjectInstance, null) as Guid?;
-
-            var entity = employeeRepository.GetByEmailAndPhoneNumber(value.ToString());
+            Console.WriteLine("value : " + value);
+            Console.WriteLine("employee repository : " + employeeRepository);
+            var entity = employeeRepository?.GetByEmailAndPhoneNumber(value.ToString());
             if (entity is null) return ValidationResult.Success;
             return (entity.Guid == guidValue ? ValidationResult.Success : new ValidationResult($"{_propertyName} '{value}' already exists."))!;
         }

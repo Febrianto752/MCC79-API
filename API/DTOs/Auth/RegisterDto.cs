@@ -18,10 +18,10 @@ namespace API.DTOs.Auth
         public DateTime HiringDate { get; set; }
         [Required]
         [EmailAddress]
-        [EmployeeDuplicateProperty("string", "Email")]
+        [EmployeeDuplicateProperty("", "Email")]
         public string Email { get; set; }
         [Required]
-        [EmployeeDuplicateProperty("string", "PhoneNumber")]
+        [EmployeeDuplicateProperty("", "PhoneNumber")]
         public string PhoneNumber { get; set; }
         [Required]
         public string Major { get; set; }

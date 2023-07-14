@@ -1,6 +1,7 @@
 ﻿using API.Contracts;
 using API.DTOs.Employees;
 using API.Models;
+using API.Utilities.Handlers;
 
 namespace API.Services;
 
@@ -78,7 +79,7 @@ public class EmployeeService
             HiringDate = newEmployeeDto.HiringDate,
             Email = newEmployeeDto.Email,
             BirthDate = newEmployeeDto.BirthDate,
-            Nik = GenerateNik(),
+            Nik = GenerateHandler.Nik(),
             CreatedDate = DateTime.Now,
             ModifiedDate = DateTime.Now
         };
@@ -157,21 +158,21 @@ public class EmployeeService
         return 1;
     }
 
-    public string GenerateNik()
-    {
-        var lastEmployee = _employeeRepository.GetAll().OrderBy(e => e.Nik).LastOrDefault();
+    //public string GenerateNik()
+    //{
+    //    var lastEmployee = _employeeRepository.GetAll().OrderBy(e => e.Nik).LastOrDefault();
 
-        if (lastEmployee is null)
-        {
-            return "1111";
-        }
-        else
-        {
-            int tmp = int.Parse(lastEmployee.Nik) + 1;
-            Console.WriteLine(tmp);
-            return (int.Parse(lastEmployee.Nik) + 1).ToString();
-        }
-    }
+    //    if (lastEmployee is null)
+    //    {
+    //        return "1111";
+    //    }
+    //    else
+    //    {
+    //        int tmp = int.Parse(lastEmployee.Nik) + 1;
+    //        Console.WriteLine(tmp);
+    //        return (int.Parse(lastEmployee.Nik) + 1).ToString();
+    //    }
+    //}
 
     public IEnumerable<EmployeeEducationDto>? GetMaster()
     {

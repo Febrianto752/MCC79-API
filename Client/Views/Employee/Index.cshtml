@@ -35,7 +35,7 @@
 
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "List of Employee";
     
 }
 @if (TempData["Success"] != null)
@@ -46,7 +46,7 @@
             icon: 'success',
             confirmButtonText: 'OK'
         });
-        console.log("hai");
+        
     </script>
 }
 else if (TempData["Error"] != null)
@@ -57,7 +57,7 @@ else if (TempData["Error"] != null)
             icon: 'error',
             confirmButtonText: 'OK'
         });
-        console.log("hai2");
+       
     </script>
 }
 
@@ -193,7 +193,3 @@ else if (TempData["Error"] != null)
         });
     });
 </script>
-
-
-
-<!-- <script src="~/js/ajax.js" asp-append-version="true"></script> -->

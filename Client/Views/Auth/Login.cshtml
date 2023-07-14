@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+@if (TempData["Success"] != null)
+{
+    <script>
+        Swal.fire({
+            title: '@(TempData["Success"])',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+
+    </script>
+}
+else if (TempData["Error"] != null)
+{
+    <script>
+        Swal.fire({
+            title: '@(TempData["Error"])',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+
+    </script>
+}
+
+<h1>Halaman Login</h1>
+
+<a asp-controller="Auth" asp-action="SignUp">Register</a>
