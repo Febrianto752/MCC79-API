@@ -21,9 +21,16 @@ public class AuthRepository : IAuthRepository
         };
         this.request = request;
     }
-    public Task<ResponseHandler<TokenDto>> SignIn(SigninDto signDto)
+    public async Task<ResponseHandler<TokenDto>> SignIn(SigninDto signDto)
     {
-        throw new NotImplementedException();
+        ResponseHandler<TokenDto> entityVM = null;
+        StringContent content = new StringContent(JsonConvert.SerializeObject(signDto), Encoding.UTF8, "application/json");
+        using (var response = httpClient.PostAsync(request + "signin/", content).Result)
+        {
+            string apiResponse = await response.Content.ReadAsStringAsync();
+            entityVM = JsonConvert.DeserializeObject<ResponseHandler<TokenDto>>(apiResponse);
+        }
+        return entityVM;
     }
 
     public async Task<ResponseHandler<string>> Register(RegisterDto registerDto)

@@ -24,6 +24,21 @@ public class AuthController : Controller
         return View();
     }
 
+    [HttpPost]
+    public async Task<IActionResult> Login(SigninDto signDto)
+    {
+        var result = await repository.SignIn(signDto);
+        if (result.Code == 200)
+        {
+            Console.WriteLine(result?.Data?.Token);
+            TempData["Success"] = "Berhasil Login";
+            return RedirectToAction(nameof(Login));
+        }
+
+        TempData["Error"] = result.Message;
+        return RedirectToAction(nameof(Login));
+    }
+
     [HttpGet]
     public IActionResult SignUp()
     {
