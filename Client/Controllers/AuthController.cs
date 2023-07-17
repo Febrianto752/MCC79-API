@@ -30,8 +30,11 @@ public class AuthController : Controller
         var result = await repository.SignIn(signDto);
         if (result.Code == 200)
         {
-            Console.WriteLine(result?.Data?.Token);
+            var token = result?.Data?.Token;
+            Console.WriteLine("token : " + token);
             TempData["Success"] = "Berhasil Login";
+            //HttpContext.Session.SetString("JWToken", token);
+            HttpContext.Session.SetString("JWToken", token);
             return RedirectToAction(nameof(Login));
         }
 
