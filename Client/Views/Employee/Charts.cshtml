@@ -1,5 +1,27 @@
 ﻿@model API.DTOs.Employees.ChartEmployeeDto
 
+@if (TempData["Success"] != null)
+{
+    <script>
+        Swal.fire({
+            title: '@(TempData["Success"])',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+
+    </script>
+}
+else if (TempData["Error"] != null)
+{
+    <script>
+        Swal.fire({
+            title: '@(TempData["Error"])',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+
+    </script>
+}
 
 <h1 class="mb-5">Dashboard</h1>
 

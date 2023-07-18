@@ -1,10 +1,12 @@
 ﻿using API.DTOs.Employees;
 using API.Utilities.Enums;
 using Client.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Client.Controllers;
 
+[Authorize(Roles = $"{nameof(RoleLevel.User)}")]
 public class EmployeeController : Controller
 {
     private readonly IEmployeeRepository repository;
@@ -17,12 +19,19 @@ public class EmployeeController : Controller
     public async Task<IActionResult> Index()
     {
         var result = await repository.Get();
+        Console.WriteLine(result);
         var ListEmployee = new List<GetEmployeeDto>();
 
-        if (result.Data != null)
+        if (result?.Data != null)
         {
             ListEmployee = result.Data.ToList();
         }
+        else
+        {
+            TempData["Error"] = result.Message;
+        }
+
+
         return View(ListEmployee);
     }
 
@@ -126,10 +135,10 @@ public class EmployeeController : Controller
             chartData.GenderCount["Male"] = employees.Where(e => e.Gender == GenderEnum.Male).Count();
 
             var monthNames = new List<string>
-        {
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        };
+            {
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            };
 
             // Group birth dates by month name, set count to 0 for missing months, and order the results
             var birthMonthCounts = monthNames
@@ -147,7 +156,7 @@ public class EmployeeController : Controller
             return View(chartData);
         }
 
-
+        TempData["Error"] = response.Message;
         return View(null);
     }
 }

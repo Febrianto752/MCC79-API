@@ -24,7 +24,7 @@ namespace Client.Repositories
                 BaseAddress = new Uri("https://localhost:7103/api/v1/")
             };
 
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", contextAccessor.ToString());
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", contextAccessor.HttpContext?.Session.GetString("JWToken"));
         }
 
         public async Task<ResponseHandler<Entity>> Delete(TId id)
@@ -43,8 +43,22 @@ namespace Client.Repositories
             ResponseHandler<IEnumerable<Entity>> entityVM = null;
             using (var response = await httpClient.GetAsync(request))
             {
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                entityVM = JsonConvert.DeserializeObject<ResponseHandler<IEnumerable<Entity>>>(apiResponse);
+                Console.WriteLine($"response : {response}");
+                Console.WriteLine($"response isSuccess : {response.IsSuccessStatusCode}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+
+                    entityVM = JsonConvert.DeserializeObject<ResponseHandler<IEnumerable<Entity>>>(apiResponse);
+
+                }
+                else
+                {
+                    entityVM = new ResponseHandler<IEnumerable<Entity>> { Code = (int)response.StatusCode, Message = response.ReasonPhrase };
+                }
+
+
             }
             return entityVM;
         }
@@ -54,8 +68,11 @@ namespace Client.Repositories
             ResponseHandler<Entity> entityVM = null;
             using (var response = await httpClient.GetAsync($"{request}{id}/"))
             {
+
                 string apiResponse = await response.Content.ReadAsStringAsync();
+
                 entityVM = JsonConvert.DeserializeObject<ResponseHandler<Entity>>(apiResponse);
+
             }
             return entityVM;
         }
