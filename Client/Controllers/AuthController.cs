@@ -24,6 +24,7 @@ public class AuthController : Controller
         return View();
     }
 
+
     [HttpPost]
     public async Task<IActionResult> Login(SigninDto signDto)
     {
@@ -39,6 +40,12 @@ public class AuthController : Controller
         }
 
         TempData["Error"] = result.Message;
+        return RedirectToAction(nameof(Login));
+    }
+
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear();
         return RedirectToAction(nameof(Login));
     }
 
