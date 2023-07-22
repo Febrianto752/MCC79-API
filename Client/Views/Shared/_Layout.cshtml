@@ -30,10 +30,14 @@
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Employee" asp-action="Index">Employee</a>
-                        </li>   
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">Login</a>
                         </li>
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">Login</a>
+                            </li>
+                        }
+                        
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Auth" asp-action="SignUp">SignUp</a>
                         </li>
@@ -41,9 +45,13 @@
                             <a class="nav-link text-dark" asp-controller="Employee" asp-action="Charts">Charts</a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Auth" asp-action="Logout">Logout</a>
-                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Auth" asp-action="Logout">Logout</a>
+                            </li>
+                        }
+                        
                     </ul>
                 </div>
             </div>

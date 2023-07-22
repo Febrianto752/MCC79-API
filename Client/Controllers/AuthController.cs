@@ -21,6 +21,11 @@ public class AuthController : Controller
     [HttpGet]
     public IActionResult Login()
     {
+
+        if (User.Identity.IsAuthenticated)
+        {
+            return RedirectToRoute(new { controller = "Employee", action = "Index" });
+        }
         return View();
     }
 
@@ -28,6 +33,7 @@ public class AuthController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(SigninDto signDto)
     {
+
         var result = await repository.SignIn(signDto);
         if (result.Code == 200)
         {
@@ -36,7 +42,7 @@ public class AuthController : Controller
             TempData["Success"] = "Berhasil Login";
             //HttpContext.Session.SetString("JWToken", token);
             HttpContext.Session.SetString("JWToken", token);
-            return RedirectToAction(nameof(Login));
+            return RedirectToRoute(new { controller = "Employee", action = "Index" });
         }
 
         TempData["Error"] = result.Message;
