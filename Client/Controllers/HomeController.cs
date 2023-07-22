@@ -1,4 +1,5 @@
 ﻿using Client.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -25,26 +26,26 @@ public class HomeController : Controller
         return View();
     }
 
-    //[AllowAnonymous]
-    //[HttpGet("/Unauthorized")]
-    //public IActionResult Unauthorized()
-    //{
-    //    return View("401");
-    //}
+    [AllowAnonymous]
+    [HttpGet("/Unauthorized")]
+    public IActionResult Unauthorized()
+    {
+        return View("401");
+    }
 
-    //[AllowAnonymous]
-    //[Route("/NotFound")]
-    //public IActionResult Notfound()
-    //{
-    //    return View("404");
-    //}
+    [AllowAnonymous]
+    [Route("/NotFound")]
+    public IActionResult NotFound()
+    {
+        return View("404");
+    }
 
-    //[AllowAnonymous]
-    //[Route("/Forbidden")]
-    //public IActionResult Forbidden()
-    //{
-    //    return View("403");
-    //}
+    [AllowAnonymous]
+    [Route("/Forbidden")]
+    public IActionResult Forbidden()
+    {
+        return View("403");
+    }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
